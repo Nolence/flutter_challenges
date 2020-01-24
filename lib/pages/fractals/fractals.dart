@@ -1,12 +1,11 @@
 import 'dart:math';
 
+import 'package:challenges/pages/fractals/models/rule.dart';
+import 'package:challenges/pages/fractals/models/tree.dart';
 import 'package:challenges/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 
-// Add L System fractals
-// https://www.youtube.com/watch?v=E1B4UoSQMFw
-
-enum FractalType { simple, lSystem }
+enum FractalType { simple, lSystem, space }
 
 class Fractals extends StatefulWidget {
   @override
@@ -17,22 +16,18 @@ class _FractalsState extends State<Fractals>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   var _length = 100.0;
+  final _customPaintKey = GlobalKey();
   Animation<double> _simpleAngle;
   Animation<double> _lAngle;
-  var _fractalType = FractalType.lSystem;
+  var _fractalType = FractalType.space;
+  Tree _tree;
 
   @override
   void initState() {
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(seconds: 6),
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _animationController.reverse();
-        } else if (status == AnimationStatus.dismissed) {
-          _animationController.forward();
-        }
-      });
+    );
 
     final Animation curve = CurvedAnimation(
       parent: _animationController,
@@ -42,9 +37,23 @@ class _FractalsState extends State<Fractals>
     _simpleAngle = Tween(begin: pi / 4, end: pi / 3).animate(curve);
     _lAngle = Tween(begin: 25.43, end: 25.57).animate(curve);
 
-    _animationController.forward();
+    if (_fractalType == FractalType.space) {
+      Future.delayed(Duration.zero, _createTree);
+    } else {
+      _animationController
+        ..addStatusListener(_repeatingStatusListener)
+        ..forward();
+    }
 
     super.initState();
+  }
+
+  void _repeatingStatusListener(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      _animationController.reverse();
+    } else if (status == AnimationStatus.dismissed) {
+      _animationController..forward();
+    }
   }
 
   @override
@@ -65,7 +74,23 @@ class _FractalsState extends State<Fractals>
           actions: <Widget>[
             DropdownButton<FractalType>(
               value: _fractalType,
-              onChanged: (value) => setState(() => _fractalType = value),
+              onChanged: (value) {
+                setState(() => _fractalType = value);
+                if (_fractalType == FractalType.simple ||
+                    _fractalType == FractalType.lSystem) {
+                  _animationController
+                    ..duration = Duration(seconds: 6)
+                    ..addStatusListener(_repeatingStatusListener)
+                    ..forward();
+                } else {
+                  _createTree();
+                  _animationController
+                    ..duration = Duration(seconds: 15)
+                    ..removeStatusListener(_repeatingStatusListener);
+                  _animationController.reset();
+                  _animationController.forward();
+                }
+              },
               items: FractalType.values.map(
                 (value) {
                   return DropdownMenuItem(
@@ -82,11 +107,13 @@ class _FractalsState extends State<Fractals>
             animation: _animationController,
             builder: (context, child) {
               return CustomPaint(
+                key: _customPaintKey,
                 painter: FractalPainter(
                   length: _length,
                   simpleAngle: _simpleAngle.value,
                   lAngle: _lAngle.value,
                   fractalType: _fractalType,
+                  tree: _tree,
                 ),
               );
             },
@@ -95,16 +122,23 @@ class _FractalsState extends State<Fractals>
       ),
     );
   }
-}
 
-/// Given a, a will map to b
-/// e.g. (A -> AB)
-/// e.g. (B -> A)
-class Rule {
-  const Rule(this.a, this.b);
+  _createTree() {
+    final RenderBox box = _customPaintKey.currentContext.findRenderObject();
+    final width = box.size.width;
+    final height = box.size.height;
 
-  final String a;
-  final String b;
+    final tree = Tree(
+      screenWidth: width,
+      screenHeight: height,
+    );
+
+    setState(() => _tree = tree);
+
+    _animationController
+      ..duration = Duration(seconds: 15)
+      ..forward();
+  }
 }
 
 class FractalPainter extends CustomPainter {
@@ -113,6 +147,7 @@ class FractalPainter extends CustomPainter {
     @required this.lAngle,
     @required this.length,
     @required this.fractalType,
+    @required this.tree,
   }) : brush = Paint()
           ..color = Colors.indigo[100]
           ..strokeWidth = 2
@@ -123,6 +158,7 @@ class FractalPainter extends CustomPainter {
   final double length;
   final Paint brush;
   final FractalType fractalType;
+  final Tree tree;
 
   final List<Rule> rules = [
     Rule('F', 'FF+[+F-F-F]-[-F+F+F]'),
@@ -156,6 +192,10 @@ class FractalPainter extends CustomPainter {
           _turtle(canvas, size, newLength, nextAxiom);
         }
         break;
+      case FractalType.space:
+        tree.show(canvas, brush);
+        tree.grow();
+        break;
       default:
         throw 'Not implemented';
     }
@@ -163,8 +203,13 @@ class FractalPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(FractalPainter oldDelegate) {
-    return lAngle != oldDelegate.lAngle ||
-        simpleAngle != oldDelegate.simpleAngle;
+    if (fractalType == FractalType.lSystem) {
+      return lAngle != oldDelegate.lAngle;
+    } else if (fractalType == FractalType.simple) {
+      return simpleAngle != oldDelegate.simpleAngle;
+    } else {
+      return true;
+    }
   }
 
   String _generate(String axiom) {

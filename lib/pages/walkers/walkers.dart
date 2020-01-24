@@ -94,11 +94,10 @@ class _WalkersState extends State<Walkers> with SingleTickerProviderStateMixin {
     final RenderBox box = _customPaintKey.currentContext.findRenderObject();
 
     final branches = <Branch>[];
+    final width = box.size.width;
+    final height = box.size.height;
 
     for (var i = 0; i < amount; i++) {
-      var width = box.size.width;
-      var height = box.size.height;
-
       final x = width / 2;
       final y = height / 2;
 

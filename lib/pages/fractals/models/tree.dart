@@ -97,7 +97,7 @@ class Tree {
       final branch = branches[i];
 
       if (branch.count > 0) {
-        branch.direction /= branch.count.toDouble();
+        branch.direction /= (branch.count.toDouble() + 1.0);
 
         branches.add(branch.next());
       }

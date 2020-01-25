@@ -1,5 +1,7 @@
 import 'package:challenges/constants.dart';
+import 'package:challenges/pages/bubbles/bubbles.dart';
 import 'package:challenges/pages/fractals/fractals.dart';
+import 'package:challenges/pages/starfield/starfield.dart';
 import 'package:challenges/pages/walkers/walkers.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +17,8 @@ class App extends StatelessWidget {
       routes: {
         '/walkers': (_) => Walkers(),
         '/fractals': (_) => Fractals(),
+        '/bubbles': (_) => Bubbles(),
+        '/starfield': (_) => Starfield(),
       },
     );
   }
@@ -31,7 +35,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: SafeArea(
         child: GridView(
-          padding: const EdgeInsets.all(kPaLg),
+          padding: const EdgeInsets.all(kPa),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 16,
@@ -48,6 +52,17 @@ class _HomeState extends State<Home> {
               title: 'Fractals',
               to: '/fractals',
               description: 'Simple and L-System Recursive fractals',
+            ),
+            PageButton(
+              title: 'Starfield',
+              to: '/starfield',
+              description: 'Plain Jane implemention of a starfield',
+            ),
+            PageButton(
+              title: 'Bubbles',
+              to: '/bubbles',
+              description:
+                  'An extension of starfield for drawing popping bubbles',
             ),
           ],
         ),

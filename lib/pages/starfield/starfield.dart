@@ -81,11 +81,9 @@ class _StarfieldState extends State<Starfield>
   void onWindowResize(Size size) {}
 }
 
-// TODO: Add star wars letters
 class StarfieldPainter extends CustomPainter {
   StarfieldPainter(this.animationValue, this.stars)
       : brush = Paint()..color = Colors.white.withOpacity(.5),
-        _startTime = DateTime.now(),
         textStyle = TextStyle(
           color: Colors.white,
           fontSize: 30,
@@ -94,20 +92,16 @@ class StarfieldPainter extends CustomPainter {
   final List<Star> stars;
   final double animationValue;
   final Paint brush;
-  DateTime _startTime;
-  DateTime _endTime;
   TextStyle textStyle;
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Move origin to center
     canvas.translate(size.width / 2, size.height / 2);
-    _endTime = DateTime.now();
-    final deltaTime = _endTime.difference(_startTime).inMicroseconds;
-    _startTime = _endTime;
 
     for (final star in stars) {
       star.show(canvas, brush, size);
-      star.update(deltaTime, size);
+      star.update(size);
     }
   }
 

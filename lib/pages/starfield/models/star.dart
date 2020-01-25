@@ -16,7 +16,7 @@ class Star {
   Offset position;
   double z;
 
-  void update(int deltaTime, Size size) {
+  void update(Size size) {
     z -= speed;
 
     if (z <= 1) {
@@ -40,8 +40,6 @@ class Star {
 
     final prevX = mapRange(position.dx / prevZ, 0, 1, 0, size.width);
     final prevY = mapRange(position.dy / prevZ, 0, 1, 0, size.height);
-
-    prevZ = z;
 
     canvas.drawLine(Offset(prevX, prevY), mappedPosition, paint);
   }

@@ -110,7 +110,7 @@ class _FractalsState extends State<Fractals>
                 key: _customPaintKey,
                 painter: FractalPainter(
                   length: _length,
-                  simpleAngle: _simpleAngle.value,
+                  animation: _simpleAngle,
                   lAngle: _lAngle.value,
                   fractalType: _fractalType,
                   tree: _tree,
@@ -143,17 +143,18 @@ class _FractalsState extends State<Fractals>
 
 class FractalPainter extends CustomPainter {
   FractalPainter({
-    @required this.simpleAngle,
+    @required this.animation,
     @required this.lAngle,
     @required this.length,
     @required this.fractalType,
     @required this.tree,
-  }) : brush = Paint()
+  })  : brush = Paint()
           ..color = Colors.indigo[100]
           ..strokeWidth = 2
-          ..strokeCap = StrokeCap.butt;
+          ..strokeCap = StrokeCap.butt,
+        super(repaint: animation);
 
-  final double simpleAngle;
+  final Animation<double> animation;
   final double lAngle;
   final double length;
   final Paint brush;
@@ -202,15 +203,7 @@ class FractalPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(FractalPainter oldDelegate) {
-    if (fractalType == FractalType.lSystem) {
-      return lAngle != oldDelegate.lAngle;
-    } else if (fractalType == FractalType.simple) {
-      return simpleAngle != oldDelegate.simpleAngle;
-    } else {
-      return true;
-    }
-  }
+  bool shouldRepaint(FractalPainter oldDelegate) => true;
 
   String _generate(String axiom) {
     var nextSentence = '';
@@ -263,11 +256,11 @@ class FractalPainter extends CustomPainter {
     canvas.translate(0, -length);
     if (length > 2) {
       canvas.save();
-      canvas.rotate(simpleAngle);
+      canvas.rotate(animation.value);
       _branch(canvas, size, length * 0.67);
       canvas.restore();
       canvas.save();
-      canvas.rotate(-simpleAngle);
+      canvas.rotate(-animation.value);
       _branch(canvas, size, length * 0.67);
       canvas.restore();
     }

@@ -68,7 +68,7 @@ class _WalkersState extends State<Walkers> with SingleTickerProviderStateMixin {
                 key: _customPaintKey,
                 painter: WalkerPaint(
                   _branches,
-                  _animationController.value,
+                  _animationController,
                   _stepFunction,
                 ),
               );
@@ -111,15 +111,16 @@ class _WalkersState extends State<Walkers> with SingleTickerProviderStateMixin {
 class WalkerPaint extends CustomPainter {
   WalkerPaint(
     this.branches,
-    this.dt,
+    this.animation,
     this.stepFunction,
-  ) : brush = Paint()
+  )   : brush = Paint()
           ..color = Colors.blue
           ..strokeWidth = 2
-          ..strokeCap = StrokeCap.butt;
+          ..strokeCap = StrokeCap.butt,
+        super(repaint: animation);
 
   final List<Branch> branches;
-  final double dt;
+  final Animation<double> animation;
   final StepFunction stepFunction;
   final Paint brush;
 
@@ -127,8 +128,8 @@ class WalkerPaint extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final color = Color.fromARGB(
       100,
-      (((dt * 720) % 100) + 155).toInt(),
-      (((dt * 255) % 100) + 155).toInt(),
+      (((animation.value * 720) % 100) + 155).toInt(),
+      (((animation.value * 255) % 100) + 155).toInt(),
       200,
     );
     Branch.colors.add(color);
@@ -143,10 +144,10 @@ class WalkerPaint extends CustomPainter {
             branch.moveRandom();
             break;
           case StepFunction.noise:
-            branch.moveNoise(dt);
+            branch.moveNoise(animation.value);
             break;
           case StepFunction.perlin:
-            branch.movePerlin(dt);
+            branch.movePerlin(animation.value);
             break;
           default:
         }
@@ -158,7 +159,5 @@ class WalkerPaint extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(WalkerPaint oldDelegate) {
-    return dt != oldDelegate.dt;
-  }
+  bool shouldRepaint(WalkerPaint oldDelegate) => true;
 }

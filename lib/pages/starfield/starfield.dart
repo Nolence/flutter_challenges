@@ -50,7 +50,7 @@ class _StarfieldState extends State<Starfield>
               key: customPaintKey,
               willChange: true,
               painter: StarfieldPainter(
-                _animationController.value,
+                _animationController,
                 _stars,
               ),
             );
@@ -82,15 +82,16 @@ class _StarfieldState extends State<Starfield>
 }
 
 class StarfieldPainter extends CustomPainter {
-  StarfieldPainter(this.animationValue, this.stars)
+  StarfieldPainter(this.animation, this.stars)
       : brush = Paint()..color = Colors.white.withOpacity(.5),
         textStyle = TextStyle(
           color: Colors.white,
           fontSize: 30,
-        );
+        ),
+        super(repaint: animation);
 
   final List<Star> stars;
-  final double animationValue;
+  final Animation<double> animation;
   final Paint brush;
   TextStyle textStyle;
 
@@ -106,7 +107,5 @@ class StarfieldPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(StarfieldPainter oldDelegate) {
-    return animationValue != oldDelegate.animationValue;
-  }
+  bool shouldRepaint(StarfieldPainter oldDelegate) => true;
 }

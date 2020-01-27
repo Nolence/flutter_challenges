@@ -1,3 +1,4 @@
+import 'package:challenges/mixins/setup_mixin.dart';
 import 'package:flutter/material.dart';
 
 class Template extends StatefulWidget {
@@ -6,14 +7,14 @@ class Template extends StatefulWidget {
 }
 
 class _TemplateState extends State<Template>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, SetupMixin {
   AnimationController _animationController;
 
   @override
   void initState() {
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
+      duration: Duration(seconds: 4),
     );
 
     // _animationController
@@ -43,6 +44,7 @@ class _TemplateState extends State<Template>
           animation: _animationController,
           builder: (context, __) {
             return CustomPaint(
+              key: customPaintKey,
               painter: TemplatePainter(),
               willChange: true,
             );
@@ -51,6 +53,12 @@ class _TemplateState extends State<Template>
       ),
     );
   }
+
+  @override
+  void onWindowResize(Size size) {}
+
+  @override
+  void setup(Size size) {}
 }
 
 class TemplatePainter extends CustomPainter {

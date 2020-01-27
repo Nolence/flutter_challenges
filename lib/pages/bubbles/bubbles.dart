@@ -60,7 +60,7 @@ class _BubblesState extends State<Bubbles>
               key: customPaintKey,
               willChange: true,
               painter: BubblesPainter(
-                _animationController.value,
+                _animationController,
                 _bubbles,
               ),
               child: widget,
@@ -94,16 +94,17 @@ class _BubblesState extends State<Bubbles>
 }
 
 class BubblesPainter extends CustomPainter {
-  BubblesPainter(this.animationValue, this.bubbles)
+  BubblesPainter(this.animation, this.bubbles)
       : brush = Paint()..color = Colors.white.withOpacity(.5),
         _startTime = DateTime.now(),
         textStyle = TextStyle(
           color: Colors.white,
           fontSize: 30,
-        );
+        ),
+        super(repaint: animation);
 
   final List<Bubble> bubbles;
-  final double animationValue;
+  final Animation<double> animation;
   final Paint brush;
   DateTime _startTime;
   DateTime _endTime;
@@ -123,7 +124,5 @@ class BubblesPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(BubblesPainter oldDelegate) {
-    return animationValue != oldDelegate.animationValue;
-  }
+  bool shouldRepaint(BubblesPainter oldDelegate) => true;
 }

@@ -1,6 +1,7 @@
 import 'package:challenges/constants.dart';
 import 'package:challenges/pages/bubbles/bubbles.dart';
 import 'package:challenges/pages/fractals/fractals.dart';
+import 'package:challenges/pages/snake_game/snake_game.dart';
 import 'package:challenges/pages/starfield/starfield.dart';
 import 'package:challenges/pages/walkers/walkers.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class App extends StatelessWidget {
         '/fractals': (_) => Fractals(),
         '/bubbles': (_) => Bubbles(),
         '/starfield': (_) => Starfield(),
+        '/snake': (_) => SnakeGame(),
       },
     );
   }
@@ -63,6 +65,11 @@ class _HomeState extends State<Home> {
               to: '/bubbles',
               description:
                   'An extension of starfield for drawing popping bubbles',
+            ),
+            PageButton(
+              title: 'Snake',
+              to: '/snake',
+              description: 'Snake game!',
             ),
           ],
         ),

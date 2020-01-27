@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:challenges/mixins/setup_mixin.dart';
 import 'package:flutter/material.dart';
 
 class DeltaTime extends StatefulWidget {
@@ -8,7 +9,7 @@ class DeltaTime extends StatefulWidget {
 }
 
 class _DeltaTimeState extends State<DeltaTime>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, SetupMixin {
   AnimationController _animationController;
 
   @override
@@ -39,6 +40,7 @@ class _DeltaTimeState extends State<DeltaTime>
           animation: _animationController,
           builder: (context, __) {
             return CustomPaint(
+              key: customPaintKey,
               painter: DeltaTimePainter(_animationController.value),
               willChange: true,
             );
@@ -47,6 +49,12 @@ class _DeltaTimeState extends State<DeltaTime>
       ),
     );
   }
+
+  @override
+  void onWindowResize(Size size) {}
+
+  @override
+  void setup(Size size) {}
 }
 
 class DeltaTimePainter extends CustomPainter {

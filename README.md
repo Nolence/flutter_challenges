@@ -25,7 +25,12 @@ Popping Bubbles!
 ![](assets/bubbles/bubbles.gif)
 
 # Starfield
-Next challenge is to do the [universe](https://www.youtube.com/watch?v=ZZY9YE7rZJw&t=0s)!
+Next challenge in this category is to do the [universe](https://www.youtube.com/watch?v=ZZY9YE7rZJw&t=0s)!
 
 ![](assets/starfield/starfield.gif)
+
+# Starfield
+A Snake (Worm) Game with custom drawn d-pad, a finite state machine and some red apples. No external game engine was used (E.g., no Flame).
+
+![](assets/snake_game/snake_game.gif)
 

@@ -1,9 +1,10 @@
 import 'dart:math';
-import 'dart:ui';
+import 'dart:ui' as UI;
 
-import 'package:challenges/mixins/setup_mixin.dart';
+import 'package:challenges/pages/snake_game/models/food.dart';
 import 'package:challenges/pages/snake_game/models/snake.dart';
-import 'package:challenges/utils/map_range.dart';
+import 'package:challenges/pages/snake_game/models/snake_game_state.dart';
+import 'package:challenges/utils/load_ui_image.dart';
 import 'package:flutter/material.dart';
 
 enum GameState { menu, playing, lost }
@@ -14,10 +15,10 @@ class SnakeGame extends StatefulWidget {
 }
 
 class _SnakeGameState extends State<SnakeGame>
-    with SingleTickerProviderStateMixin, SetupMixin {
+    with SingleTickerProviderStateMixin {
   AnimationController _animationController;
-  Snake snake;
-  var snakeGameState = SnakeGameState(GameState.playing);
+  final snakeGameState = SnakeGameState(GameState.menu);
+  Future<UI.Image> _imageFuture;
 
   @override
   void initState() {
@@ -27,6 +28,8 @@ class _SnakeGameState extends State<SnakeGame>
     );
 
     _animationController.forward();
+
+    _imageFuture = loadUiImage('assets/apple.png');
 
     super.initState();
   }
@@ -41,135 +44,127 @@ class _SnakeGameState extends State<SnakeGame>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('SnakeGame')),
+      appBar: AppBar(title: Text('The Snake (Worm) Game')),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, __) {
-            return CustomPaint(
-              key: customPaintKey,
-              willChange: true,
-              painter: SnakeGamePainter(
-                _animationController,
-                snake,
-                snakeGameState,
-              ),
+        child: FutureBuilder<UI.Image>(
+          future: _imageFuture,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
+            if (snapshot.hasError) {
+              throw snapshot.error;
+            }
+
+            return AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, __) {
+                return CustomPaint(
+                  willChange: true,
+                  painter: SnakeGamePainter(
+                    _animationController,
+                    snakeGameState,
+                    snapshot.data,
+                  ),
+                );
+              },
             );
           },
         ),
       ),
     );
   }
-
-  @override
-  void onWindowResize(Size size) {}
-
-  @override
-  void setup(Size size) {
-    final random = Random();
-    // FIXME: This sucks. Just spawn the snake in the middle
-    final position = Offset(
-      mapRange(random.nextDouble(), 0, 1, 0, size.width),
-      mapRange(random.nextDouble(), 0, 1, 0, size.height),
-    );
-    final speed = Offset(-1, 0);
-
-    final unitHeight = size.height / snakeGameState.rows;
-    final unitWidth = size.width / snakeGameState.columns;
-
-    snake = Snake(
-      position,
-      speed,
-      width: unitWidth,
-      height: unitHeight,
-    );
-
-    snakeGameState.foods.add(
-      Food(
-        Offset(
-          mapRange(random.nextDouble(), 0, 1, 0, size.width),
-          mapRange(random.nextDouble(), 0, 1, 0, size.height),
-        ),
-        width: unitWidth,
-        height: unitHeight,
-      ),
-    );
-  }
-}
-
-class Food {
-  Food(this.position, {@required this.width, @required this.height});
-
-  final Offset position;
-  final double width;
-  final double height;
-
-  void show(Canvas canvas, Size size, Paint paint) {
-    canvas.drawRect(
-      Rect.fromLTWH(position.dx, position.dy, width, height),
-      paint,
-    );
-  }
-}
-
-/// The snake by of size 1x1 when the game begins.
-/// The actual dimensions will be determined by the screen size.
-/// e.g., the width will be (1 / 50) * size.width
-class SnakeGameState {
-  SnakeGameState(
-    this.gameState, {
-    this.columns = 50,
-    this.rows = 50,
-  });
-
-  final int columns;
-  final int rows;
-  final List<Food> foods = [];
-
-  GameState gameState;
 }
 
 class SnakeGamePainter extends CustomPainter {
-  SnakeGamePainter(this.animation, this.snake, this.snakeGameState)
+  SnakeGamePainter(this.animation, this.snakeGameState, this.appleImage)
       : brush = Paint()..color = Colors.white,
         textStyle = TextStyle(
           color: Colors.white,
           fontSize: 24,
         ),
-        checkBounds = false,
+        checkBounds = true,
+        snake = snakeGameState.snake,
         super(repaint: animation);
 
   static final dPadBottomPadding = 56.0;
   static final buttonLength = 32.0;
 
   final Animation<double> animation;
-  final Snake snake;
   final SnakeGameState snakeGameState;
+  final UI.Image appleImage;
+  final Snake snake;
   final Paint brush;
   final bool checkBounds;
 
   int score = 0;
   TextStyle textStyle;
   Size _size;
+  Size _screenSize;
 
   @override
   void paint(Canvas canvas, Size size) {
     _size = size; // Not ideal
+    _screenSize = Size(
+      size.width,
+      size.height - dPadBottomPadding - (buttonLength * 4),
+    ); // Not ideal
 
     switch (snakeGameState.gameState) {
       case GameState.menu:
         _showStartScreen(canvas, size);
         break;
       case GameState.playing:
-        if (checkBounds) {
-          if (_lost(size)) snakeGameState.gameState = GameState.lost;
-        } else {
-          _drawGrid(canvas, size);
-          _clamp(size);
+        snakeGameState.endTime = DateTime.now();
+        final deltaTime = snakeGameState.endTime.difference(
+          snakeGameState.startTime,
+        );
+        snakeGameState.startTime = snakeGameState.endTime;
+
+        snakeGameState.deltaTimeSum += deltaTime;
+        if (snakeGameState.deltaTimeSum > snakeGameState.updateRate) {
+          final toRemove = <Food>[];
+          for (final food in snakeGameState.foods) {
+            if (snake.canEat(food.position)) {
+              toRemove.add(food);
+            }
+          }
+
+          if (toRemove.isNotEmpty) {
+            for (final food in toRemove) {
+              snakeGameState.updateRate -= const Duration(microseconds: 5000);
+
+              snake.eat(food);
+            }
+
+            snakeGameState.foods.removeWhere((food) {
+              return toRemove.contains(food);
+            });
+
+            _createFood();
+          }
+
+          snakeGameState.deltaTimeSum = Duration.zero;
+
+          snake.update(deltaTime);
+
+          if (snake.ateItself()) {
+            snakeGameState.gameState = GameState.lost;
+          }
         }
-        snake.show(canvas, brush, size);
-        snake.update();
-        _drawFood(canvas, size);
+
+        if (checkBounds) {
+          if (_lost(_screenSize)) {
+            snakeGameState.gameState = GameState.lost;
+          }
+        } else {
+          _clamp(_screenSize);
+          _drawGrid(canvas, _screenSize);
+        }
+
+        _drawScreen(canvas, _screenSize);
+        _drawFood(canvas, _screenSize);
+        snake.show(canvas, brush, _screenSize);
         _paintScore(canvas, size);
         _drawGamePad(canvas, size);
         break;
@@ -187,6 +182,10 @@ class SnakeGamePainter extends CustomPainter {
   bool hitTest(Offset position) {
     switch (snakeGameState.gameState) {
       case GameState.menu:
+        for (int i = 0; i < snakeGameState.initialFruitCount; i++) {
+          _createFood();
+        }
+        _createSnake();
         snakeGameState.gameState = GameState.playing;
         break;
       case GameState.lost:
@@ -200,10 +199,55 @@ class SnakeGamePainter extends CustomPainter {
     return true;
   }
 
+  void _createFood() {
+    final unitHeight = _screenSize.height / snakeGameState.rows;
+    final unitWidth = _screenSize.width / snakeGameState.columns;
+
+    snakeGameState.foods.add(
+      Food(
+        _pickRandomLocation(
+          width: unitWidth,
+          height: unitHeight,
+          columns: snakeGameState.columns,
+          rows: snakeGameState.rows,
+        ),
+        appleImage,
+        width: unitWidth,
+        height: unitHeight,
+      ),
+    );
+  }
+
+  void _createSnake() {
+    final unitHeight = _screenSize.height / snakeGameState.rows;
+    final unitWidth = _screenSize.width / snakeGameState.columns;
+    final speed = Offset(0, -1);
+
+    snakeGameState.snake = Snake(
+      _pickRandomLocation(
+        width: unitWidth,
+        height: unitHeight,
+        columns: snakeGameState.columns,
+        rows: snakeGameState.rows,
+        inMiddle: true,
+      ),
+      speed,
+      width: unitWidth,
+      height: unitHeight,
+    );
+  }
+
   void _drawFood(Canvas canvas, Size size) {
     for (final food in snakeGameState.foods) {
       food.show(canvas, size, brush);
     }
+  }
+
+  void _drawScreen(Canvas canvas, Size size) {
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      brush..color = Colors.grey[800],
+    );
   }
 
   void _drawGrid(Canvas canvas, Size size) {
@@ -219,13 +263,13 @@ class SnakeGamePainter extends CustomPainter {
 
   /// Checks the bound to see if the snake has gone off the screen
   bool _lost(Size size) {
-    if (snake.position.dx - (snake.width / 2) <= 0 ||
-        snake.position.dx + (snake.width / 2) >= size.width) {
+    if (snake.head.dx + (snake.width / 2) <= 0 ||
+        snake.head.dx + (snake.width / 2) >= size.width) {
       return true;
     }
 
-    if (snake.position.dy - (snake.width / 2) <= 0 ||
-        snake.position.dy + (snake.height / 2) >= size.height) {
+    if (snake.head.dy + (snake.height / 2) <= 0 ||
+        snake.head.dy + (snake.height / 2) >= size.height) {
       return true;
     }
 
@@ -233,9 +277,9 @@ class SnakeGamePainter extends CustomPainter {
   }
 
   void _clamp(Size size) {
-    snake.position = Offset(
-      snake.position.dx.clamp(0.0, size.width - snake.width),
-      snake.position.dy.clamp(0.0, size.height - snake.height),
+    snake.head = Offset(
+      snake.head.dx.clamp(0.0, size.width - snake.width),
+      snake.head.dy.clamp(0.0, size.height - snake.height),
     );
   }
 
@@ -334,12 +378,12 @@ class SnakeGamePainter extends CustomPainter {
       ..relativeLineTo(buttonLength, 0) // right
       ..close();
 
-    canvas.drawPath(path, brush);
+    canvas.drawPath(path, brush..color = Colors.grey);
   }
 
   void _paintScore(Canvas canvas, Size size) {
     final textSpan = TextSpan(
-      text: 'Score: $score',
+      text: 'Score: ${snake.tail.length}',
       style: textStyle,
     );
     final textPainter = TextPainter(
@@ -352,5 +396,25 @@ class SnakeGamePainter extends CustomPainter {
     );
     final offset = Offset(size.width - textPainter.size.width - 16.0, 16.0);
     textPainter.paint(canvas, offset);
+  }
+
+  Offset _pickRandomLocation({
+    @required double width,
+    @required double height,
+    @required int columns,
+    @required int rows,
+    bool inMiddle = false,
+  }) {
+    final random = Random();
+    final position = Offset(
+      inMiddle
+          ? (random.nextInt(columns ~/ 3) + columns ~/ 3) * width
+          : random.nextInt(columns) * width,
+      inMiddle
+          ? (random.nextInt(rows ~/ 3) + rows ~/ 3) * height
+          : random.nextInt(rows) * height,
+    );
+
+    return position;
   }
 }

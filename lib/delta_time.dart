@@ -75,9 +75,7 @@ class DeltaTimePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     _endTime = DateTime.now();
-
     final deltaTime = _endTime.difference(_startTime);
-
     _startTime = _endTime;
 
     final textSpan = TextSpan(

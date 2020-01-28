@@ -29,7 +29,7 @@ Next challenge in this category is to do the [universe](https://www.youtube.com/
 
 ![](assets/starfield/starfield.gif)
 
-# Starfield
+# Snake Game
 A Snake (Worm) Game with custom drawn d-pad, a finite state machine and some red apples. No external game engine was used (E.g., no Flame).
 
 ![](assets/snake_game/snake_game.gif)

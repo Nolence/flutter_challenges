@@ -1,6 +1,7 @@
 import 'package:challenges/constants.dart';
 import 'package:challenges/pages/bubbles/bubbles.dart';
 import 'package:challenges/pages/fractals/fractals.dart';
+import 'package:challenges/pages/purple_rain/purple_rain.dart';
 import 'package:challenges/pages/snake_game/snake_game.dart';
 import 'package:challenges/pages/starfield/starfield.dart';
 import 'package:challenges/pages/walkers/walkers.dart';
@@ -21,6 +22,7 @@ class App extends StatelessWidget {
         '/bubbles': (_) => Bubbles(),
         '/starfield': (_) => Starfield(),
         '/snake': (_) => SnakeGame(),
+        '/purple_rain': (_) => PurpleRain(),
       },
     );
   }
@@ -70,6 +72,11 @@ class _HomeState extends State<Home> {
               title: 'Snake',
               to: '/snake',
               description: 'Snake game!',
+            ),
+            PageButton(
+              title: 'Purple Rain',
+              to: '/purple_rain',
+              description: 'Purple rain with simple physics',
             ),
           ],
         ),

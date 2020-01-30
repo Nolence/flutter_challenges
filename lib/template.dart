@@ -45,7 +45,7 @@ class _TemplateState extends State<Template>
           builder: (context, __) {
             return CustomPaint(
               key: customPaintKey,
-              painter: TemplatePainter(),
+              painter: TemplatePainter(_animationController),
               willChange: true,
             );
           },
@@ -62,7 +62,9 @@ class _TemplateState extends State<Template>
 }
 
 class TemplatePainter extends CustomPainter {
-  const TemplatePainter();
+  const TemplatePainter(this.animation) : super(repaint: animation);
+
+  final Animation<double> animation;
 
   @override
   void paint(Canvas canvas, Size size) {}

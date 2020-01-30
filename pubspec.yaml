@@ -46,6 +46,11 @@ flutter:
   assets:
     - assets/
     - packages/challenges/assets/apple.png
+    - packages/challenges/assets/flower_1.png
+    - packages/challenges/assets/flower_2.png
+    - packages/challenges/assets/flower_3.png
+    - packages/challenges/assets/watering_can.png
+    - packages/challenges/assets/water_drop.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

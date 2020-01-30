@@ -16,7 +16,7 @@ class _DeltaTimeState extends State<DeltaTime>
   void initState() {
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(days: 365),
+      duration: const Duration(days: 365),
     );
 
     _animationController.forward();
@@ -41,7 +41,7 @@ class _DeltaTimeState extends State<DeltaTime>
           builder: (context, __) {
             return CustomPaint(
               key: customPaintKey,
-              painter: DeltaTimePainter(_animationController.value),
+              painter: DeltaTimePainter(_animationController),
               willChange: true,
             );
           },
@@ -58,15 +58,16 @@ class _DeltaTimeState extends State<DeltaTime>
 }
 
 class DeltaTimePainter extends CustomPainter {
-  DeltaTimePainter(this.animationValue)
+  DeltaTimePainter(this.animation)
       : brush = Paint()..color = Colors.white,
         _startTime = DateTime.now(),
         textStyle = TextStyle(
           color: Colors.white,
           fontSize: 30,
-        );
+        ),
+        super(repaint: animation);
 
-  final double animationValue;
+  final Animation<double> animation;
   final Paint brush;
   DateTime _startTime;
   DateTime _endTime;
@@ -96,6 +97,6 @@ class DeltaTimePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(DeltaTimePainter oldDelegate) {
-    return animationValue != oldDelegate.animationValue;
+    return true;
   }
 }

@@ -4,26 +4,20 @@ import 'package:challenges/utils/map_range.dart';
 import 'package:flutter/material.dart';
 
 class Droplet {
-  Droplet([this.position, this.velocity, this.acceleration]);
+  Droplet([this.position, this.velocity]);
 
   Offset position;
   Offset velocity;
-  Offset acceleration;
 
   static final double maxSpeed = 11.0;
   static final double minSpeed = 6.0;
 
   void update(Size size, Random random) {
-    velocity = Offset(
-      min(3.0, velocity.dx * acceleration.dx),
-      min(maxSpeed, velocity.dy * acceleration.dy),
-    );
     position += velocity;
 
     if (position.dy > size.height) {
       randomPosition(size, random, true);
       randomVelocity(random);
-      randomAcceleration(random);
     }
 
     if (position.dx > size.width) {
@@ -44,8 +38,10 @@ class Droplet {
   void show(Canvas canvas, Paint paint) {
     canvas.drawLine(
       position,
-      Offset(position.dx,
-          position.dy + mapRange(velocity.dy, minSpeed, maxSpeed, 5, 10)),
+      Offset(
+        position.dx,
+        position.dy + mapRange(velocity.dy, minSpeed, maxSpeed, 5, 10),
+      ),
       paint
         ..color = Colors.purple
         ..strokeWidth = mapRange(velocity.dy, minSpeed, maxSpeed, 1, 6),
@@ -56,10 +52,10 @@ class Droplet {
     random ??= Random();
 
     position = Offset(
-      mapRange(random.nextDouble(), 0, 1, 0, size.width * 2),
+      mapRange(random.nextDouble(), 0, 1, 0, size.width),
       atTop
           ? -size.width
-          : mapRange(random.nextDouble(), 0, 1, 0, -size.height),
+          : mapRange(random.nextDouble(), 0, 1, 0, -size.height * 2),
     );
 
     return this;
@@ -70,17 +66,8 @@ class Droplet {
 
     velocity = Offset(
       mapRange(random.nextDouble(), 0, 1, 0, 0.02),
-      mapRange(random.nextDouble(), 0, 1, minSpeed, 7.0),
+      mapRange(random.nextDouble(), 0, 1, minSpeed, maxSpeed),
     );
-
-    return this;
-  }
-
-  Droplet randomAcceleration([Random random]) {
-    random ??= Random();
-
-    acceleration =
-        Offset(1.0, mapRange(random.nextDouble(), 0, 1, 1.001, 1.002));
 
     return this;
   }

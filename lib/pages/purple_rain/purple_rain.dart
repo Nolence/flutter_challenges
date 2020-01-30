@@ -66,8 +66,7 @@ class PurpleRainState extends State<PurpleRain>
     for (int i = 0; i < dropletCount; i++) {
       final droplet = Droplet()
         ..randomPosition(size, random)
-        ..randomVelocity(random)
-        ..randomAcceleration(random);
+        ..randomVelocity(random);
 
       rain.add(droplet);
     }

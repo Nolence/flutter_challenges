@@ -105,6 +105,8 @@ class DeltaTimePainter extends CustomPainter {
         break;
       case GameState.lost:
         break;
+      case GameState.won:
+        break;
     }
 
     final textSpan = TextSpan(

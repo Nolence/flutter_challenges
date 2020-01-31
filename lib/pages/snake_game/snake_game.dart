@@ -171,6 +171,9 @@ class SnakeGamePainter extends CustomPainter {
         _paintLostScreen(canvas, size);
         _paintScore(canvas, size);
         break;
+      case GameState.won:
+        throw 'This shouldn\'t happen';
+        break;
     }
   }
 
@@ -192,6 +195,9 @@ class SnakeGamePainter extends CustomPainter {
         break;
       case GameState.playing:
         _handleDPadInput(position);
+        break;
+      case GameState.won:
+        throw 'This shouldn\'t happen';
         break;
     }
 

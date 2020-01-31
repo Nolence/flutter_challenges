@@ -104,6 +104,9 @@ class _InvadersState extends State<Invaders>
         _reset();
         invadersGameState.gameState = GameState.menu;
         break;
+      case GameState.won:
+        invadersGameState.gameState = GameState.menu;
+        break;
     }
   }
 
@@ -233,6 +236,9 @@ class InvadersPainter extends CustomPainter {
       case GameState.lost:
         _paintLostScreen(canvas, size);
         break;
+      case GameState.won:
+        _paintWonScreen(canvas, size);
+        break;
     }
   }
 
@@ -288,6 +294,7 @@ class InvadersPainter extends CustomPainter {
     flowers.removeWhere((flower) => flowersToRemove.contains(flower));
 
     final List<WaterDrop> waterDropsToRemove = [];
+    assert(waterDrops.length < 100);
     for (final waterDrop in waterDrops) {
       waterDrop.show(canvas, size, brush);
       waterDrop.update(deltaTime);
@@ -342,6 +349,27 @@ class InvadersPainter extends CustomPainter {
   void _paintLostScreen(Canvas canvas, Size size) {
     final textSpan = TextSpan(
       text: 'You lost!\nTap to play again.',
+      style: textStyle,
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.center,
+    );
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: size.width,
+    );
+    final offset = Offset(
+      (size.width / 2) - (textPainter.size.width / 2),
+      (size.height / 2) - (textPainter.size.height / 2),
+    );
+    textPainter.paint(canvas, offset);
+  }
+
+  void _paintWonScreen(Canvas canvas, Size size) {
+    final textSpan = TextSpan(
+      text: 'You won!\nTap to go to menu or press return to go back.',
       style: textStyle,
     );
     final textPainter = TextPainter(

@@ -1,13 +1,12 @@
 import 'dart:math';
 import 'dart:ui' as UI;
 
+import 'package:challenges/game_state.dart';
 import 'package:challenges/pages/snake_game/models/food.dart';
 import 'package:challenges/pages/snake_game/models/snake.dart';
 import 'package:challenges/pages/snake_game/models/snake_game_state.dart';
 import 'package:challenges/utils/load_ui_image.dart';
 import 'package:flutter/material.dart';
-
-enum GameState { menu, playing, lost }
 
 class SnakeGame extends StatefulWidget {
   @override

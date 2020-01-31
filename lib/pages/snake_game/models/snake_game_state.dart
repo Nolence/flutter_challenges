@@ -1,6 +1,6 @@
+import 'package:challenges/game_state.dart';
 import 'package:challenges/pages/snake_game/models/food.dart';
 import 'package:challenges/pages/snake_game/models/snake.dart';
-import 'package:challenges/pages/snake_game/snake_game.dart';
 
 /// The snake by of size 1x1 when the game begins.
 /// The actual dimensions will be determined by the screen size.

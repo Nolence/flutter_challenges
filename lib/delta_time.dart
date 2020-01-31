@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:challenges/game_state.dart';
 import 'package:challenges/mixins/setup_mixin.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,9 @@ class DeltaTime extends StatefulWidget {
 
 class _DeltaTimeState extends State<DeltaTime>
     with SingleTickerProviderStateMixin, SetupMixin {
+  bool isInitialized = false;
   AnimationController _animationController;
+  DeltaGameState deltaGameState;
 
   @override
   void initState() {
@@ -41,7 +44,12 @@ class _DeltaTimeState extends State<DeltaTime>
           builder: (context, __) {
             return CustomPaint(
               key: customPaintKey,
-              painter: DeltaTimePainter(_animationController),
+              painter: isInitialized
+                  ? DeltaTimePainter(
+                      _animationController,
+                      deltaGameState,
+                    )
+                  : null,
               willChange: true,
             );
           },
@@ -54,11 +62,21 @@ class _DeltaTimeState extends State<DeltaTime>
   void onWindowResize(Size size) {}
 
   @override
-  void setup(Size size) {}
+  void setup(Size size) {
+    deltaGameState = DeltaGameState();
+
+    setState(() => isInitialized = true);
+  }
+}
+
+class DeltaGameState {
+  DeltaGameState();
+
+  var gameState = GameState.menu;
 }
 
 class DeltaTimePainter extends CustomPainter {
-  DeltaTimePainter(this.animation)
+  DeltaTimePainter(this.animation, this.deltaGameState)
       : brush = Paint()..color = Colors.white,
         _startTime = DateTime.now(),
         textStyle = TextStyle(
@@ -72,12 +90,22 @@ class DeltaTimePainter extends CustomPainter {
   DateTime _startTime;
   DateTime _endTime;
   TextStyle textStyle;
+  DeltaGameState deltaGameState;
 
   @override
   void paint(Canvas canvas, Size size) {
     _endTime = DateTime.now();
     final deltaTime = _endTime.difference(_startTime);
     _startTime = _endTime;
+
+    switch (deltaGameState.gameState) {
+      case GameState.menu:
+        break;
+      case GameState.playing:
+        break;
+      case GameState.lost:
+        break;
+    }
 
     final textSpan = TextSpan(
       text: 'Delta Time (μ): ${deltaTime.inMicroseconds}',

@@ -19,7 +19,7 @@ const List<Level> levels = [
 ];
 
 class Level {
-  const Level(this.arrangement, this.speed) : gap = 40.0;
+  const Level(this.arrangement, this.speed) : gap = 20.0;
 
   final List<List<Fl>> arrangement;
 

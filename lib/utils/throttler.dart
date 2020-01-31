@@ -1,40 +1,65 @@
 import 'dart:async';
 
-/// Copied from https://github.com/PlugFox/throttling/blob/master/lib/src/throttle.dart
-/// Throttler
-/// Have method [throttle]
-class Throttler {
-  Throttler({this.duration = const Duration(seconds: 1)}) {
-    _subscription.sink.add(true);
+/// Map of functions currently being throttled.
+Map<Function, _ThrottleTarget> _throttled = <Function, _ThrottleTarget>{};
+
+/// A collection of of static functions to throttle calls to a target function.
+class Throttle {
+  /// Calls [duration] with a timeout specified in milliseconds.
+  static bool milliseconds(int timeoutMs, Function target,
+          [List<dynamic> positionalArguments,
+          Map<Symbol, dynamic> namedArguments]) =>
+      duration(Duration(milliseconds: timeoutMs), target, positionalArguments,
+          namedArguments);
+
+  /// Calls [duration] with a timeout specified in seconds.
+  static bool seconds(int timeoutSeconds, Function target,
+          [List<dynamic> positionalArguments,
+          Map<Symbol, dynamic> namedArguments]) =>
+      duration(Duration(seconds: timeoutSeconds), target, positionalArguments,
+          namedArguments);
+
+  /// Calls [target] immediately and prevents subsequent calls until [timeout] duration.
+  ///
+  /// Repeated calls to [duration] (or any throttle operation in this library)
+  /// with the same [Function target] will be supressed until the original call
+  /// reaches its timeout limit.
+  ///
+  /// Returns [true] if the function was called, [false] if it was blocked.
+  static bool duration(Duration timeout, Function target,
+      [List<dynamic> positionalArguments,
+      Map<Symbol, dynamic> namedArguments]) {
+    if (_throttled.containsKey(target)) {
+      return false;
+    }
+
+    Function.apply(target, positionalArguments, namedArguments);
+    final _ThrottleTarget throttleTarget =
+        _ThrottleTarget(target, positionalArguments, namedArguments);
+    _throttled[target] = throttleTarget;
+    Timer(timeout, () {
+      _throttled.remove(target);
+    });
+
+    return true;
   }
 
-  final Duration duration;
-  final StreamController<bool> _subscription =
-      StreamController<bool>.broadcast();
+  static bool clear(Function target) {
+    if (_throttled.containsKey(target)) {
+      _throttled.remove(target);
+      return true;
+    }
 
-  bool isReady = true;
-  Future<void> get _waiter => Future.delayed(duration);
-
-  Function throttle(Function func) {
-    if (!isReady) return null;
-
-    _subscription.sink.add(false);
-
-    isReady = false;
-
-    _waiter
-      ..then((_) {
-        isReady = true;
-        _subscription.sink.add(true);
-      });
-
-    return Function.apply(func, []);
+    return false;
   }
+}
 
-  StreamSubscription<bool> listen(Function(bool) onData) =>
-      _subscription.stream.listen(onData);
+// _ThrottleTimer allows us to keep track of the target function
+// along with it's timer.
+class _ThrottleTarget {
+  final Function target;
+  final List<dynamic> positionalArguments;
+  final Map<Symbol, dynamic> namedArguments;
 
-  dispose() {
-    _subscription.close();
-  }
+  _ThrottleTarget(this.target, this.positionalArguments, this.namedArguments);
 }

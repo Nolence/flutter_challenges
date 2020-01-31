@@ -9,12 +9,16 @@ class WateringCan {
     @required this.image,
     this.targetPosition,
     this.canSize = 40,
-  });
+    this.shootingRate = const Duration(microseconds: 5000),
+  }) : timePassed = shootingRate;
 
   Offset position;
   final UI.Image image;
   Offset targetPosition;
   final double canSize;
+  bool isShooting = false;
+  Duration shootingRate;
+  Duration timePassed;
 
   Rect get rect {
     return Rect.fromCenter(
@@ -25,7 +29,6 @@ class WateringCan {
   }
 
   static Duration currentTime = Duration.zero;
-  static const Duration updateRate = Duration(microseconds: 333333); // TODO:
 
   void show(Canvas canvas, Size size, Paint paint) {
     canvas.drawImageRect(

@@ -1,13 +1,14 @@
 import 'dart:ui';
 import 'dart:ui' as UI;
 
+import 'package:challenges/game_state.dart';
 import 'package:challenges/mixins/setup_mixin.dart';
 import 'package:challenges/pages/invaders/levels.dart';
 import 'package:challenges/pages/invaders/models/flower.dart';
+import 'package:challenges/pages/invaders/models/invaders_game_state.dart';
 import 'package:challenges/pages/invaders/models/water_drop.dart';
 import 'package:challenges/pages/invaders/models/watering_can.dart';
 import 'package:challenges/utils/load_ui_image.dart';
-import 'package:challenges/utils/throttler.dart';
 import 'package:flutter/material.dart';
 
 class Invaders extends StatefulWidget {
@@ -23,7 +24,10 @@ class _InvadersState extends State<Invaders>
   List<WaterDrop> waterDrops = [];
   WateringCan wateringCan;
   UI.Image waterDropImage;
-  final throttle = Throttler(duration: Duration(milliseconds: 150));
+  UI.Image wateringCanImage;
+  List<UI.Image> flowerImages;
+  InvadersGameState invadersGameState;
+  Size _size;
 
   @override
   void initState() {
@@ -67,6 +71,9 @@ class _InvadersState extends State<Invaders>
                           wateringCan: wateringCan,
                           flowers: flowers,
                           waterDrops: waterDrops,
+                          invadersGameState: invadersGameState,
+                          waterDropImage: waterDropImage,
+                          reset: _reset,
                         )
                       : null,
                   willChange: true,
@@ -74,9 +81,9 @@ class _InvadersState extends State<Invaders>
               },
             ),
             GestureDetector(
-              onPanUpdate: _move,
-              onTapDown: _onShoot,
-              onPanEnd: _stopMoving,
+              onPanUpdate: _startShooting,
+              onPanDown: _startShooting,
+              onPanEnd: (_) => _stopShooting(),
             ),
           ],
         ),
@@ -84,34 +91,24 @@ class _InvadersState extends State<Invaders>
     );
   }
 
-  void _move(DragUpdateDetails details) {
-    wateringCan.targetPosition = details.localPosition;
-
-    _shoot(wateringCan.position);
+  void _startShooting(dynamic event) {
+    switch (invadersGameState.gameState) {
+      case GameState.menu:
+        invadersGameState.gameState = GameState.playing;
+        break;
+      case GameState.playing:
+        wateringCan.isShooting = true;
+        wateringCan.targetPosition = event.localPosition;
+        break;
+      case GameState.lost:
+        _reset();
+        invadersGameState.gameState = GameState.menu;
+        break;
+    }
   }
 
-  void _stopMoving(DragEndDetails details) {}
-
-  void _onShoot(TapDownDetails details) {
-    wateringCan.targetPosition = details.localPosition;
-
-    _shoot(wateringCan.position);
-  }
-
-  void _shoot(Offset position) {
-    throttle.throttle(
-      () {
-        waterDrops.add(
-          WaterDrop(
-            position.translate(
-              wateringCan.canSize / 2 - 8.0,
-              -wateringCan.canSize / 2 - 6.0,
-            ),
-            image: waterDropImage,
-          ),
-        );
-      },
-    );
+  void _stopShooting() {
+    wateringCan.isShooting = false;
   }
 
   @override
@@ -119,23 +116,28 @@ class _InvadersState extends State<Invaders>
 
   @override
   void setup(Size size) async {
-    final images = await Future.wait([
-      loadUiImage('assets/watering_can.png'),
-      loadUiImage('assets/flower_1.png'),
-      loadUiImage('assets/flower_2.png'),
-      loadUiImage('assets/flower_3.png'),
-      loadUiImage('assets/water_drop.png'),
-    ]);
+    _size = size;
+    await _fetchImages();
 
-    final wateringCanImage = images.first;
-    final flowerImages = images.getRange(1, 3).toList();
-    waterDropImage = images[4];
+    _reset();
 
-    final position = Offset(size.width / 2, size.height - 100);
+    setState(() => isInitialized = true);
+  }
+
+  void _reset([int currentLevel = 0]) {
+    waterDrops.clear();
+    flowers.clear();
+
+    final position = Offset(_size.width / 2, _size.height - 100);
     wateringCan = WateringCan(position, image: wateringCanImage);
 
     final flowerSize = 30.0;
-    final level = levels.last;
+    final level = levels[currentLevel];
+
+    invadersGameState = InvadersGameState(
+      currentLevel: currentLevel,
+      gameState: GameState.playing,
+    );
 
     for (int i = 0; i < level.rows; i++) {
       for (int j = 0; j < level.columns; j++) {
@@ -168,8 +170,20 @@ class _InvadersState extends State<Invaders>
         ));
       }
     }
+  }
 
-    setState(() => isInitialized = true);
+  Future<void> _fetchImages() async {
+    final images = await Future.wait([
+      loadUiImage('assets/watering_can.png'),
+      loadUiImage('assets/flower_1.png'),
+      loadUiImage('assets/flower_2.png'),
+      loadUiImage('assets/flower_3.png'),
+      loadUiImage('assets/water_drop.png'),
+    ]);
+
+    wateringCanImage = images.first;
+    flowerImages = images.getRange(1, 3).toList();
+    waterDropImage = images[4];
   }
 }
 
@@ -179,6 +193,9 @@ class InvadersPainter extends CustomPainter {
     @required this.wateringCan,
     @required this.flowers,
     @required this.waterDrops,
+    @required this.invadersGameState,
+    @required this.waterDropImage,
+    @required this.reset,
   })  : brush = Paint()..color = Colors.white,
         _startTime = DateTime.now(),
         textStyle = TextStyle(
@@ -192,6 +209,9 @@ class InvadersPainter extends CustomPainter {
   final WateringCan wateringCan;
   final List<Flower> flowers;
   final List<WaterDrop> waterDrops;
+  InvadersGameState invadersGameState;
+  final UI.Image waterDropImage;
+  void Function([int currentLevel]) reset;
 
   DateTime _startTime;
   DateTime _endTime;
@@ -203,14 +223,44 @@ class InvadersPainter extends CustomPainter {
     final deltaTime = _endTime.difference(_startTime);
     _startTime = _endTime;
 
-    // if (isMoving) {
-    //   wateringCan.tryFire();
-    // }
+    switch (invadersGameState.gameState) {
+      case GameState.menu:
+        _showStartScreen(canvas, size);
+        break;
+      case GameState.playing:
+        _gameLoop(canvas, size, deltaTime);
+        break;
+      case GameState.lost:
+        _paintLostScreen(canvas, size);
+        break;
+    }
+  }
+
+  void _gameLoop(Canvas canvas, Size size, Duration deltaTime) {
+    if (wateringCan.isShooting) {
+      wateringCan.timePassed += deltaTime;
+
+      if (wateringCan.timePassed >= wateringCan.shootingRate) {
+        wateringCan.timePassed = Duration.zero;
+
+        _shoot(wateringCan.position);
+      }
+    }
 
     wateringCan.show(canvas, size, brush);
     wateringCan.update(deltaTime);
 
     var hitEdge = false;
+
+    if (flowers.isEmpty) {
+      if (invadersGameState.currentLevel == levels.length - 1) {
+        invadersGameState.gameState = GameState.lost;
+        // TODO:
+        // invadersGameState.gameState = GameState.won;
+      } else {
+        reset(invadersGameState.currentLevel + 1);
+      }
+    }
 
     final List<Flower> flowersToRemove = [];
     for (final flower in flowers) {
@@ -219,12 +269,8 @@ class InvadersPainter extends CustomPainter {
 
       if (flower.hitEdge(size)) hitEdge = true;
 
-      if (flower.passedBottom(size)) {
-        print('lost');
-      }
-
-      if (flower.hits(wateringCan)) {
-        print('lost');
+      if (flower.hits(wateringCan) || flower.passedBottom(size)) {
+        invadersGameState.gameState = GameState.lost;
       }
 
       if (flower.exploded) {
@@ -259,6 +305,59 @@ class InvadersPainter extends CustomPainter {
     }
 
     waterDrops.removeWhere((drop) => waterDropsToRemove.contains(drop));
+  }
+
+  void _shoot(Offset position) {
+    waterDrops.add(
+      WaterDrop(
+        position.translate(
+          wateringCan.canSize / 2 - 8.0,
+          -wateringCan.canSize / 2 - 6.0,
+        ),
+        image: waterDropImage,
+      ),
+    );
+  }
+
+  void _showStartScreen(Canvas canvas, Size size) {
+    final textSpan = TextSpan(
+      text: 'Press the screen to start',
+      style: textStyle,
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: size.width,
+    );
+    final offset = Offset(
+      (size.width / 2) - (textPainter.size.width / 2),
+      (size.height / 2) - (textPainter.size.height / 2),
+    );
+    textPainter.paint(canvas, offset);
+  }
+
+  void _paintLostScreen(Canvas canvas, Size size) {
+    final textSpan = TextSpan(
+      text: 'You lost!\nTap to play again.',
+      style: textStyle,
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.center,
+    );
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: size.width,
+    );
+    final offset = Offset(
+      (size.width / 2) - (textPainter.size.width / 2),
+      (size.height / 2) - (textPainter.size.height / 2),
+    );
+    textPainter.paint(canvas, offset);
   }
 
   @override

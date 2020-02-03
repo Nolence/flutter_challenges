@@ -1,9 +1,12 @@
 import 'package:challenges/constants.dart';
 import 'package:challenges/pages/bubbles/bubbles.dart';
+import 'package:challenges/pages/color_interpolation/color_interpolation.dart';
 import 'package:challenges/pages/fractals/fractals.dart';
 import 'package:challenges/pages/invaders/invaders.dart';
+import 'package:challenges/pages/mitosis/mitosis.dart';
 import 'package:challenges/pages/purple_rain/purple_rain.dart';
 import 'package:challenges/pages/snake_game/snake_game.dart';
+import 'package:challenges/pages/solar_system/solar_system.dart';
 import 'package:challenges/pages/starfield/starfield.dart';
 import 'package:challenges/pages/walkers/walkers.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +21,7 @@ class App extends StatelessWidget {
       theme: ThemeData.dark(),
       home: Home(),
       routes: {
+        '/solar_system': (_) => SolarSystem(),
         '/walkers': (_) => Walkers(),
         '/fractals': (_) => Fractals(),
         '/bubbles': (_) => Bubbles(),
@@ -25,6 +29,8 @@ class App extends StatelessWidget {
         '/snake': (_) => SnakeGame(),
         '/purple_rain': (_) => PurpleRain(),
         '/invaders': (_) => Invaders(),
+        '/color_interpolation': (_) => ColorInterpolation(),
+        '/mitosis': (_) => Mitosis(),
       },
     );
   }
@@ -48,6 +54,11 @@ class _HomeState extends State<Home> {
             mainAxisSpacing: 16,
           ),
           children: <Widget>[
+            PageButton(
+              title: 'Solar System',
+              to: '/solar_system',
+              description: 'A 2D solar system',
+            ),
             PageButton(
               title: 'Walkers',
               to: '/walkers',
@@ -84,6 +95,16 @@ class _HomeState extends State<Home> {
               title: 'Invaders',
               to: '/invaders',
               description: 'Fighting off some invaders',
+            ),
+            // PageButton(
+            //   title: 'Color Interpolation',
+            //   to: '/color_interpolation',
+            //   description: 'Interpolate between four colors',
+            // ),
+            PageButton(
+              title: 'Mitosis',
+              to: '/mitosis',
+              description: 'Splitting some cells today!',
             ),
           ],
         ),

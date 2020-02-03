@@ -1,12 +1,12 @@
 import 'package:challenges/mixins/setup_mixin.dart';
 import 'package:flutter/material.dart';
 
-class Template extends StatefulWidget {
+class ColorInterpolation extends StatefulWidget {
   @override
-  _TemplateState createState() => _TemplateState();
+  _ColorInterpolationState createState() => _ColorInterpolationState();
 }
 
-class _TemplateState extends State<Template>
+class _ColorInterpolationState extends State<ColorInterpolation>
     with SingleTickerProviderStateMixin, SetupMixin {
   AnimationController _animationController;
 
@@ -14,7 +14,7 @@ class _TemplateState extends State<Template>
   void initState() {
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4),
+      duration: Duration(seconds: 4),
     );
 
     // _animationController
@@ -38,14 +38,14 @@ class _TemplateState extends State<Template>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Template')),
+      appBar: AppBar(title: Text('ColorInterpolation')),
       body: SizedBox.expand(
         child: AnimatedBuilder(
           animation: _animationController,
           builder: (context, __) {
             return CustomPaint(
               key: customPaintKey,
-              painter: TemplatePainter(_animationController),
+              painter: ColorInterpolationPainter(_animationController),
               willChange: true,
             );
           },
@@ -61,13 +61,21 @@ class _TemplateState extends State<Template>
   void setup(Size size) {}
 }
 
-class TemplatePainter extends CustomPainter {
-  const TemplatePainter(this.animation) : super(repaint: animation);
+class ColorInterpolationPainter extends CustomPainter {
+  const ColorInterpolationPainter(this.animation) : super(repaint: animation);
 
   final Animation<double> animation;
 
   @override
-  void paint(Canvas canvas, Size size) {}
+  void paint(Canvas canvas, Size size) {
+    // Paints whole canvas this doesn't work.
+    // You have to break up the canvas first
+    // for (int i = 0; i < size.height; i++) {
+    //   for (int j = 0; j < size.width; i++) {
+    //     canvas.drawColor(Colors.blue, BlendMode.color);
+    //   }
+    // }
+  }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;

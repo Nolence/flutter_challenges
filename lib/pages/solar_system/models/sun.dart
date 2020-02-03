@@ -41,6 +41,6 @@ class Sun {
   final bool showMoons;
 
   void show(Canvas canvas, Size size, Paint paint) {
-    canvas.drawCircle(position, radius, paint..color = Colors.blue);
+    canvas.drawCircle(position, radius, paint..color);
   }
 }

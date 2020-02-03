@@ -29,13 +29,17 @@ Next challenge in this category is to do the [universe](https://www.youtube.com/
 
 ![](assets/starfield/starfield.gif)
 
-<<<<<<< HEAD
-# Starfield
-A Snake (Worm) Game with an input sensitive d-pad, a finite state machine and some red apples. No external game engine was used -- E.g., no Flame.
-=======
 # Snake Game
 A Snake (Worm) Game with custom drawn d-pad, a finite state machine and some red apples. No external game engine was used (E.g., no Flame).
->>>>>>> fc45eb906093fb442fa209ad44413444078a9a8b
 
 ![](assets/snake_game/snake_game.gif)
 
+
+# Purple Rain
+
+![](assets/purple_rain/purple_rain.gif)
+
+# Invaders
+This hosts three levels and a full loaded watering can
+
+![](assets/invaders/invaders.gif)

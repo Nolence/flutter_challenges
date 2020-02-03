@@ -9,7 +9,7 @@ class WateringCan {
     @required this.image,
     this.targetPosition,
     this.canSize = 40,
-    this.shootingRate = const Duration(microseconds: 5000),
+    this.shootingRate = const Duration(microseconds: 16000),
   }) : timePassed = shootingRate;
 
   Offset position;

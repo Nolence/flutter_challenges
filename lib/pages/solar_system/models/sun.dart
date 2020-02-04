@@ -17,13 +17,15 @@ class Sun {
               final planetRadius =
                   random.nextInt((radius * .8).toInt()).toDouble();
               final angle = mapRange(random.nextDouble(), 0, 1, 0, 2 * pi);
+              final distance = mapRange(random.nextDouble(), 0, 1,
+                  radius + planetRadius, (radius + planetRadius) * 2);
 
               return MapEntry(
                 index,
                 Planet(
                   radius: planetRadius,
                   angle: angle,
-                  distance: ((radius * 2) + (planetRadius * 2)) * index,
+                  distance: distance * index,
                   random: Random(),
                   level: 1,
                   showMoons: showMoons,

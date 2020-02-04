@@ -3,6 +3,7 @@ import 'package:challenges/pages/bubbles/bubbles.dart';
 import 'package:challenges/pages/color_interpolation/color_interpolation.dart';
 import 'package:challenges/pages/fractals/fractals.dart';
 import 'package:challenges/pages/invaders/invaders.dart';
+import 'package:challenges/pages/maze_generator/maze_generator.dart';
 import 'package:challenges/pages/mitosis/mitosis.dart';
 import 'package:challenges/pages/purple_rain/purple_rain.dart';
 import 'package:challenges/pages/snake_game/snake_game.dart';
@@ -21,6 +22,7 @@ class App extends StatelessWidget {
       theme: ThemeData.dark(),
       home: Home(),
       routes: {
+        '/maze_generator': (_) => MazeGenerator(),
         '/solar_system': (_) => SolarSystem(),
         '/walkers': (_) => Walkers(),
         '/fractals': (_) => Fractals(),
@@ -54,6 +56,11 @@ class _HomeState extends State<Home> {
             mainAxisSpacing: 16,
           ),
           children: <Widget>[
+            PageButton(
+              title: 'Maze Generator',
+              to: '/maze_generator',
+              description: 'A generator for mazes',
+            ),
             PageButton(
               title: 'Solar System',
               to: '/solar_system',

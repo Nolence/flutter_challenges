@@ -43,3 +43,11 @@ A Snake (Worm) Game with custom drawn d-pad, a finite state machine and some red
 This hosts three levels and a full loaded watering can
 
 ![](assets/invaders/invaders.gif)
+
+# Solar System
+
+![](assets/solar_system/solar_system.gif)
+
+# Maze Generation
+
+![](assets/maze_generator/maze_generator.gif)

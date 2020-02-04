@@ -36,7 +36,7 @@ class _SolarSystemState extends State<SolarSystem>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('SolarSystem')),
+      appBar: AppBar(title: const Text('SolarSystem')),
       body: SizedBox.expand(
         child: AnimatedBuilder(
           animation: _animationController,

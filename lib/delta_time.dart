@@ -6,14 +6,15 @@ import 'package:flutter/material.dart';
 
 class DeltaTime extends StatefulWidget {
   @override
-  _DeltaTimeState createState() => _DeltaTimeState();
+  DeltaTimeState createState() => DeltaTimeState();
 }
 
-class _DeltaTimeState extends State<DeltaTime>
+class DeltaTimeState extends State<DeltaTime>
     with SingleTickerProviderStateMixin, SetupMixin {
-  bool isInitialized = false;
+  bool _isInitialized = false;
   AnimationController _animationController;
-  DeltaGameState deltaGameState;
+
+  var gameState = GameState.menu;
 
   @override
   void initState() {
@@ -44,13 +45,13 @@ class _DeltaTimeState extends State<DeltaTime>
           builder: (context, __) {
             return CustomPaint(
               key: customPaintKey,
-              painter: isInitialized
+              willChange: true,
+              painter: _isInitialized
                   ? DeltaTimePainter(
                       _animationController,
-                      deltaGameState,
+                      this,
                     )
                   : null,
-              willChange: true,
             );
           },
         ),
@@ -63,20 +64,14 @@ class _DeltaTimeState extends State<DeltaTime>
 
   @override
   void setup(Size size) {
-    deltaGameState = DeltaGameState();
+    // Work
 
-    setState(() => isInitialized = true);
+    setState(() => _isInitialized = true);
   }
 }
 
-class DeltaGameState {
-  DeltaGameState();
-
-  var gameState = GameState.menu;
-}
-
 class DeltaTimePainter extends CustomPainter {
-  DeltaTimePainter(this.animation, this.deltaGameState)
+  DeltaTimePainter(this.animation, this.state)
       : brush = Paint()..color = Colors.white,
         _startTime = DateTime.now(),
         textStyle = TextStyle(
@@ -90,7 +85,7 @@ class DeltaTimePainter extends CustomPainter {
   DateTime _startTime;
   DateTime _endTime;
   TextStyle textStyle;
-  DeltaGameState deltaGameState;
+  DeltaTimeState state;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -98,7 +93,7 @@ class DeltaTimePainter extends CustomPainter {
     final deltaTime = _endTime.difference(_startTime);
     _startTime = _endTime;
 
-    switch (deltaGameState.gameState) {
+    switch (state.gameState) {
       case GameState.menu:
         break;
       case GameState.playing:

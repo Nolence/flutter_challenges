@@ -3,28 +3,22 @@ import 'package:flutter/material.dart';
 
 class Template extends StatefulWidget {
   @override
-  _TemplateState createState() => _TemplateState();
+  TemplateState createState() => TemplateState();
 }
 
-class _TemplateState extends State<Template>
+class TemplateState extends State<Template>
     with SingleTickerProviderStateMixin, SetupMixin {
   AnimationController _animationController;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4),
+      duration: const Duration(days: 365),
     );
 
-    // _animationController
-    //   ..addListener(() {
-    //     // debugPrint('${_animationController.value}');
-    //     print(_animationController.value);
-    //   })
-    //   ..forward();
-
-    // _animationController.forward();
+    _animationController.forward();
     super.initState();
   }
 
@@ -45,8 +39,10 @@ class _TemplateState extends State<Template>
           builder: (context, __) {
             return CustomPaint(
               key: customPaintKey,
-              painter: TemplatePainter(_animationController),
               willChange: true,
+              painter: _isInitialized
+                  ? TemplatePainter(_animationController, this)
+                  : null,
             );
           },
         ),
@@ -58,13 +54,18 @@ class _TemplateState extends State<Template>
   void onWindowResize(Size size) {}
 
   @override
-  void setup(Size size) {}
+  void setup(Size size) {
+    // Work
+
+    setState(() => _isInitialized = true);
+  }
 }
 
 class TemplatePainter extends CustomPainter {
-  const TemplatePainter(this.animation) : super(repaint: animation);
+  const TemplatePainter(this.animation, this.state) : super(repaint: animation);
 
   final Animation<double> animation;
+  final TemplateState state;
 
   @override
   void paint(Canvas canvas, Size size) {}

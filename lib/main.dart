@@ -5,7 +5,6 @@ import 'package:challenges/pages/fractals/fractals.dart';
 import 'package:challenges/pages/invaders/invaders.dart';
 import 'package:challenges/pages/maze_generator/maze_generator.dart';
 import 'package:challenges/pages/mitosis/mitosis.dart';
-import 'package:challenges/pages/obj_files/obj_files.dart';
 import 'package:challenges/pages/purple_rain/purple_rain.dart';
 import 'package:challenges/pages/snake_game/snake_game.dart';
 import 'package:challenges/pages/solar_system/solar_system.dart';
@@ -24,7 +23,6 @@ class App extends StatelessWidget {
       theme: ThemeData.dark(),
       home: Home(),
       routes: {
-        '/obj_files': (_) => ObjFiles(),
         '/terrain_generation': (_) => TerrainGeneration(),
         '/maze_generator': (_) => MazeGenerator(),
         '/solar_system': (_) => SolarSystem(),

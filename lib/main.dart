@@ -5,10 +5,12 @@ import 'package:challenges/pages/fractals/fractals.dart';
 import 'package:challenges/pages/invaders/invaders.dart';
 import 'package:challenges/pages/maze_generator/maze_generator.dart';
 import 'package:challenges/pages/mitosis/mitosis.dart';
+import 'package:challenges/pages/obj_files/obj_files.dart';
 import 'package:challenges/pages/purple_rain/purple_rain.dart';
 import 'package:challenges/pages/snake_game/snake_game.dart';
 import 'package:challenges/pages/solar_system/solar_system.dart';
 import 'package:challenges/pages/starfield/starfield.dart';
+import 'package:challenges/pages/terrain_generation/terrain_generation.dart';
 import 'package:challenges/pages/walkers/walkers.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +24,8 @@ class App extends StatelessWidget {
       theme: ThemeData.dark(),
       home: Home(),
       routes: {
+        '/obj_files': (_) => ObjFiles(),
+        '/terrain_generation': (_) => TerrainGeneration(),
         '/maze_generator': (_) => MazeGenerator(),
         '/solar_system': (_) => SolarSystem(),
         '/walkers': (_) => Walkers(),
@@ -56,6 +60,16 @@ class _HomeState extends State<Home> {
             mainAxisSpacing: 16,
           ),
           children: <Widget>[
+            PageButton(
+              title: 'Obj Files',
+              to: '/obj_files',
+              description: 'Understanding an obj library.',
+            ),
+            PageButton(
+              title: 'Terrain Generation',
+              to: '/terrain_generation',
+              description: 'Oh no! The matrices!',
+            ),
             PageButton(
               title: 'Maze Generator',
               to: '/maze_generator',

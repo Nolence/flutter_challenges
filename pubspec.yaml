@@ -10,7 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # TODO: Remove
   fast_noise:
+  google_fonts:
 
   cupertino_icons: ^0.1.2
 

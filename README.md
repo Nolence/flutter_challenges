@@ -51,3 +51,11 @@ This hosts three levels and a full loaded watering can
 # Maze Generation
 
 ![](excluded_assets/maze_generator/maze_generator.gif)
+
+# Terrain Generation Music Player
+
+![](excluded_assets/terrain_generation/music_player.gif)
+
+# Rotating Cube Login Page
+
+![](excluded_assets/rotating_cube/hiveio.gif)

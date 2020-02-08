@@ -6,6 +6,7 @@ import 'package:challenges/pages/invaders/invaders.dart';
 import 'package:challenges/pages/maze_generator/maze_generator.dart';
 import 'package:challenges/pages/mitosis/mitosis.dart';
 import 'package:challenges/pages/purple_rain/purple_rain.dart';
+import 'package:challenges/pages/rotating_cube/rotating_cube.dart';
 import 'package:challenges/pages/snake_game/snake_game.dart';
 import 'package:challenges/pages/solar_system/solar_system.dart';
 import 'package:challenges/pages/starfield/starfield.dart';
@@ -23,6 +24,7 @@ class App extends StatelessWidget {
       theme: ThemeData.dark(),
       home: Home(),
       routes: {
+        '/rotating_cube': (_) => RotatingCube(),
         '/terrain_generation': (_) => TerrainGeneration(),
         '/maze_generator': (_) => MazeGenerator(),
         '/solar_system': (_) => SolarSystem(),
@@ -59,9 +61,9 @@ class _HomeState extends State<Home> {
           ),
           children: <Widget>[
             PageButton(
-              title: 'Obj Files',
-              to: '/obj_files',
-              description: 'Understanding an obj library.',
+              title: 'A rotating cube!',
+              to: '/rotating_cube',
+              description: 'My first experience with a perspective matrix',
             ),
             PageButton(
               title: 'Terrain Generation',

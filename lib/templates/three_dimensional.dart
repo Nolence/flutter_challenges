@@ -4,20 +4,19 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 
-// TODO: Come back to this and figure out how I should normalize the coordinates
-class LorenzAttractor extends StatefulWidget {
+class ThreeDimensional extends StatefulWidget {
   @override
-  _LorenzAttractorState createState() => _LorenzAttractorState();
+  _ThreeDimensionalState createState() => _ThreeDimensionalState();
 }
 
 /// For a quick tutorial in 3d, I'd recommend http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/
 /// For an understanding of transforms, see http://www.songho.ca/opengl/gl_transform.html
-class _LorenzAttractorState extends State<LorenzAttractor>
+class _ThreeDimensionalState extends State<ThreeDimensional>
     with SingleTickerProviderStateMixin {
   final customPaintKey = GlobalKey();
 
   AnimationController controller;
-  LorenzAttractorPainter painter;
+  ThreeDimensionalPainter painter;
 
   @override
   void initState() {
@@ -30,7 +29,7 @@ class _LorenzAttractorState extends State<LorenzAttractor>
       final context = customPaintKey.currentContext;
       final RenderBox box = context.findRenderObject();
 
-      setState(() => painter = LorenzAttractorPainter(box.size, controller));
+      setState(() => painter = ThreeDimensionalPainter(box.size, controller));
       controller.forward();
     });
 
@@ -46,7 +45,7 @@ class _LorenzAttractorState extends State<LorenzAttractor>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Lorenz Attractor')),
+      appBar: AppBar(title: Text('Soft Engine')),
       body: SizedBox.expand(
         child: AnimatedBuilder(
           animation: controller,
@@ -78,8 +77,8 @@ class Mesh {
 // transformed in different way as vertices do. It is mutiplying the
 // tranpose of the inverse of GL_MODELVIEW matrix by a normal vector.
 
-class LorenzAttractorPainter extends CustomPainter {
-  LorenzAttractorPainter(this.size, this.animation)
+class ThreeDimensionalPainter extends CustomPainter {
+  ThreeDimensionalPainter(this.size, this.animation)
       : aspectRatio = size.width / size.height,
         super(repaint: animation) {
     cameraDistance = cameraPosition.distanceTo(lookAt);
@@ -224,7 +223,7 @@ class LorenzAttractorPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(LorenzAttractorPainter old) => false;
+  bool shouldRepaint(ThreeDimensionalPainter old) => false;
 }
 
 bool matrixEqualEpsilon(Matrix4 left, Matrix4 right, double epsilon) {

@@ -3,6 +3,7 @@ import 'package:challenges/pages/bubbles/bubbles.dart';
 import 'package:challenges/pages/color_interpolation/color_interpolation.dart';
 import 'package:challenges/pages/fractals/fractals.dart';
 import 'package:challenges/pages/invaders/invaders.dart';
+import 'package:challenges/pages/lorenz_attractor/lorenz_attractor.dart';
 import 'package:challenges/pages/maze_generator/maze_generator.dart';
 import 'package:challenges/pages/mitosis/mitosis.dart';
 import 'package:challenges/pages/purple_rain/purple_rain.dart';
@@ -24,6 +25,7 @@ class App extends StatelessWidget {
       theme: ThemeData.dark(),
       home: Home(),
       routes: {
+        '/lorenz_attractor': (_) => LorenzAttractor(),
         '/rotating_cube': (_) => RotatingCube(),
         '/terrain_generation': (_) => TerrainGeneration(),
         '/maze_generator': (_) => MazeGenerator(),
@@ -60,6 +62,11 @@ class _HomeState extends State<Home> {
             mainAxisSpacing: 16,
           ),
           children: <Widget>[
+            PageButton(
+              title: 'A Lorenz Attractor',
+              to: '/lorenz_attractor',
+              description: 'A Differential Lorenz system.',
+            ),
             PageButton(
               title: 'A rotating cube!',
               to: '/rotating_cube',
@@ -162,7 +169,7 @@ class PageButton extends StatelessWidget {
             children: <Widget>[
               Text(
                 title,
-                style: Theme.of(context).textTheme.title.copyWith(),
+                style: Theme.of(context).textTheme.headline6.copyWith(),
               ),
               const SizedBox(height: kGapSmall),
               Expanded(

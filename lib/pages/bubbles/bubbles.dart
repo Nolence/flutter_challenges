@@ -48,7 +48,7 @@ class _BubblesState extends State<Bubbles>
           child: Center(
             child: Text(
               'Bubbles',
-              style: Theme.of(context).textTheme.display3.copyWith(
+              style: Theme.of(context).textTheme.headline3.copyWith(
                     fontSize: 66.0,
                     color: Colors.greenAccent,
                     fontWeight: FontWeight.bold,

@@ -311,15 +311,6 @@ class TerrainGenerationPainter extends CustomPainter {
       ..strokeWidth = 4
       ..style = PaintingStyle.fill;
 
-// The only shaders I've found are UI.Gradient and UI.ImageShader
-    brush = brush
-      ..shader = UI.Gradient.linear(
-        Offset(0, 0),
-        // absurd numbers
-        Offset(10000, 10000),
-        [Colors.blue, Colors.blue],
-      );
-
     final lookAt = Vector3.zero();
     final cameraDistance = cameraPosition.distanceTo(lookAt);
     final aspectRatio = width / height;
@@ -342,6 +333,12 @@ class TerrainGenerationPainter extends CustomPainter {
       zNearPlane,
       zFarPlane,
     );
+    // Sometimes the view matrix and model matrix are premultiplied and
+    // stored as a model-view matrix. While each object has its own
+    // model matrix, the view matrix is shared by all objects in the
+    // scene, as they are all rendered from the same camera. Given a
+    // camera's model matrix C, any vector v can be transformed from
+    // model space, to world space, to camera space.
     final mvp = projectionMatrix * viewMatrix * modelMatrix;
     final flutterCompatTransform = toFlutterCoords * mvp * toOpenGlCoords;
 

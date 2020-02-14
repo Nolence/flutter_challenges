@@ -1,18 +1,19 @@
 import 'dart:ui';
 
 import 'package:challenges/game_state.dart';
-import 'package:challenges/mixins/setup_mixin.dart';
 import 'package:flutter/material.dart';
 
-class DeltaTime extends StatefulWidget {
+class GameTemplate extends StatefulWidget {
   @override
-  DeltaTimeState createState() => DeltaTimeState();
+  GameTemplateState createState() => GameTemplateState();
 }
 
-class DeltaTimeState extends State<DeltaTime>
-    with SingleTickerProviderStateMixin, SetupMixin {
+class GameTemplateState extends State<GameTemplate>
+    with SingleTickerProviderStateMixin {
   bool _isInitialized = false;
+  GameTemplatePainter painter;
   AnimationController _animationController;
+  final customPaintKey = GlobalKey();
 
   var gameState = GameState.menu;
 
@@ -20,10 +21,18 @@ class DeltaTimeState extends State<DeltaTime>
   void initState() {
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(days: 365),
+      duration: const Duration(
+        days: 365, // Large durations sometimes breaks android.
+      ),
     );
 
-    _animationController.forward();
+    Future.delayed(Duration.zero, () {
+      final context = customPaintKey.currentContext;
+      final RenderBox box = context.findRenderObject();
+
+      setup(box.size);
+      _animationController.forward();
+    });
 
     super.initState();
   }
@@ -38,7 +47,7 @@ class DeltaTimeState extends State<DeltaTime>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('DeltaTime')),
+      appBar: AppBar(title: Text('GameTemplate')),
       body: SizedBox.expand(
         child: AnimatedBuilder(
           animation: _animationController,
@@ -46,12 +55,7 @@ class DeltaTimeState extends State<DeltaTime>
             return CustomPaint(
               key: customPaintKey,
               willChange: true,
-              painter: _isInitialized
-                  ? DeltaTimePainter(
-                      _animationController,
-                      this,
-                    )
-                  : null,
+              painter: _isInitialized ? painter : null,
             );
           },
         ),
@@ -59,20 +63,16 @@ class DeltaTimeState extends State<DeltaTime>
     );
   }
 
-  @override
-  void onWindowResize(Size size) {}
-
-  @override
   void setup(Size size) {
-    // Work
+    painter = GameTemplatePainter(_animationController);
 
     setState(() => _isInitialized = true);
   }
 }
 
-class DeltaTimePainter extends CustomPainter {
-  DeltaTimePainter(this.animation, this.state)
-      : brush = Paint()..color = Colors.white,
+class GameTemplatePainter extends CustomPainter {
+  GameTemplatePainter(this.animation)
+      : brush = Paint(),
         _startTime = DateTime.now(),
         textStyle = TextStyle(
           color: Colors.white,
@@ -85,7 +85,7 @@ class DeltaTimePainter extends CustomPainter {
   DateTime _startTime;
   DateTime _endTime;
   TextStyle textStyle;
-  DeltaTimeState state;
+  GameTemplateState state;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -121,7 +121,5 @@ class DeltaTimePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(DeltaTimePainter oldDelegate) {
-    return true;
-  }
+  bool shouldRepaint(GameTemplatePainter oldDelegate) => false;
 }

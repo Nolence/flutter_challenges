@@ -7,6 +7,7 @@ import 'package:challenges/pages/lorenz_attractor/lorenz_attractor.dart';
 import 'package:challenges/pages/maze_generator/maze_generator.dart';
 import 'package:challenges/pages/mitosis/mitosis.dart';
 import 'package:challenges/pages/purple_rain/purple_rain.dart';
+import 'package:challenges/pages/reaction_diffusion/reaction_diffusion.dart';
 import 'package:challenges/pages/rotating_cube/rotating_cube.dart';
 import 'package:challenges/pages/snake_game/snake_game.dart';
 import 'package:challenges/pages/solar_system/solar_system.dart';
@@ -25,6 +26,7 @@ class App extends StatelessWidget {
       theme: ThemeData.dark(),
       home: Home(),
       routes: {
+        '/reaction_diffusion': (_) => ReactionDiffusion(),
         '/lorenz_attractor': (_) => LorenzAttractor(),
         '/rotating_cube': (_) => RotatingCube(),
         '/terrain_generation': (_) => TerrainGeneration(),
@@ -62,6 +64,11 @@ class _HomeState extends State<Home> {
             mainAxisSpacing: 16,
           ),
           children: <Widget>[
+            PageButton(
+              title: 'Reaction Diffusion',
+              to: '/reaction_diffusion',
+              description: 'Some fun with diffusion.',
+            ),
             PageButton(
               title: 'A Lorenz Attractor',
               to: '/lorenz_attractor',

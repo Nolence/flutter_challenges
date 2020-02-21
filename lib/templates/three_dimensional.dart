@@ -29,7 +29,7 @@ class _ThreeDimensionalState extends State<ThreeDimensional>
       final context = customPaintKey.currentContext;
       final RenderBox box = context.findRenderObject();
 
-      setState(() => painter = ThreeDimensionalPainter(box.size, controller));
+      setState(() => painter = ThreeDimensionalPainter(controller, box.size));
       controller.forward();
     });
 
@@ -78,7 +78,7 @@ class Mesh {
 // tranpose of the inverse of GL_MODELVIEW matrix by a normal vector.
 
 class ThreeDimensionalPainter extends CustomPainter {
-  ThreeDimensionalPainter(this.size, this.animation)
+  ThreeDimensionalPainter(this.animation, this.size)
       : aspectRatio = size.width / size.height,
         super(repaint: animation) {
     cameraDistance = cameraPosition.distanceTo(lookAt);

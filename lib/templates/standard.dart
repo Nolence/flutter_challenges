@@ -11,8 +11,6 @@ class StandardState extends State<Standard>
   StandardPainter painter;
   final customPaintKey = GlobalKey();
 
-  var _isInitialized = false;
-
   @override
   void initState() {
     _animationController = AnimationController(
@@ -24,12 +22,10 @@ class StandardState extends State<Standard>
 
     Future.delayed(Duration.zero, () {
       final context = customPaintKey.currentContext;
-      if (context == null)
-        throw 'Make sure to add the key \`customPaintKey\` to your `CustomPainter`.';
-
       final RenderBox box = context.findRenderObject();
 
-      setup(box.size);
+      setState(() => painter = StandardPainter(_animationController, box.size));
+
       _animationController.forward();
     });
 
@@ -54,25 +50,20 @@ class StandardState extends State<Standard>
             return CustomPaint(
               key: customPaintKey,
               willChange: true,
-              painter: _isInitialized ? painter : null,
+              painter: painter,
             );
           },
         ),
       ),
     );
   }
-
-  void setup(Size size) {
-    painter = StandardPainter(_animationController);
-
-    setState(() => _isInitialized = true);
-  }
 }
 
 class StandardPainter extends CustomPainter {
-  const StandardPainter(this.animation) : super(repaint: animation);
+  const StandardPainter(this.animation, this.size) : super(repaint: animation);
 
   final Animation<double> animation;
+  final Size size;
 
   @override
   void paint(Canvas canvas, Size size) {}

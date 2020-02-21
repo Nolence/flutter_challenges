@@ -10,7 +10,6 @@ class GameTemplate extends StatefulWidget {
 
 class GameTemplateState extends State<GameTemplate>
     with SingleTickerProviderStateMixin {
-  bool _isInitialized = false;
   GameTemplatePainter painter;
   AnimationController _animationController;
   final customPaintKey = GlobalKey();
@@ -30,7 +29,10 @@ class GameTemplateState extends State<GameTemplate>
       final context = customPaintKey.currentContext;
       final RenderBox box = context.findRenderObject();
 
-      setup(box.size);
+      setState(() {
+        painter = GameTemplatePainter(_animationController, box.size);
+      });
+
       _animationController.forward();
     });
 
@@ -55,23 +57,17 @@ class GameTemplateState extends State<GameTemplate>
             return CustomPaint(
               key: customPaintKey,
               willChange: true,
-              painter: _isInitialized ? painter : null,
+              painter: painter,
             );
           },
         ),
       ),
     );
   }
-
-  void setup(Size size) {
-    painter = GameTemplatePainter(_animationController);
-
-    setState(() => _isInitialized = true);
-  }
 }
 
 class GameTemplatePainter extends CustomPainter {
-  GameTemplatePainter(this.animation)
+  GameTemplatePainter(this.animation, this.size)
       : brush = Paint(),
         _startTime = DateTime.now(),
         textStyle = TextStyle(
@@ -82,6 +78,8 @@ class GameTemplatePainter extends CustomPainter {
 
   final Animation<double> animation;
   final Paint brush;
+  final Size size;
+
   DateTime _startTime;
   DateTime _endTime;
   TextStyle textStyle;

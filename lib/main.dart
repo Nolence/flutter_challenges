@@ -7,11 +7,11 @@ import 'package:challenges/pages/lorenz_attractor/lorenz_attractor.dart';
 import 'package:challenges/pages/maze_generator/maze_generator.dart';
 import 'package:challenges/pages/mitosis/mitosis.dart';
 import 'package:challenges/pages/purple_rain/purple_rain.dart';
-import 'package:challenges/pages/reaction_diffusion/reaction_diffusion.dart';
 import 'package:challenges/pages/rotating_cube/rotating_cube.dart';
 import 'package:challenges/pages/snake_game/snake_game.dart';
 import 'package:challenges/pages/solar_system/solar_system.dart';
 import 'package:challenges/pages/starfield/starfield.dart';
+import 'package:challenges/pages/super_ellipse/super_ellipse.dart';
 import 'package:challenges/pages/terrain_generation/terrain_generation.dart';
 import 'package:challenges/pages/walkers/walkers.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,7 @@ class App extends StatelessWidget {
       theme: ThemeData.dark(),
       home: Home(),
       routes: {
-        '/reaction_diffusion': (_) => ReactionDiffusion(),
+        '/super_ellipse': (_) => SuperEllipse(),
         '/lorenz_attractor': (_) => LorenzAttractor(),
         '/rotating_cube': (_) => RotatingCube(),
         '/terrain_generation': (_) => TerrainGeneration(),
@@ -65,9 +65,9 @@ class _HomeState extends State<Home> {
           ),
           children: <Widget>[
             PageButton(
-              title: 'Reaction Diffusion',
-              to: '/reaction_diffusion',
-              description: 'Some fun with diffusion.',
+              title: 'A simple super ellipse',
+              to: '/super_ellipse',
+              description: 'Watch as the value of n animates',
             ),
             PageButton(
               title: 'A Lorenz Attractor',

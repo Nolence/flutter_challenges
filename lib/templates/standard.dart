@@ -15,9 +15,8 @@ class StandardState extends State<Standard>
   void initState() {
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(
-        days: 365, // Large durations sometimes breaks android.
-      ),
+      // Large durations sometimes breaks android.
+      duration: const Duration(days: 365),
     );
 
     Future.delayed(Duration.zero, () {
@@ -49,7 +48,6 @@ class StandardState extends State<Standard>
           builder: (context, __) {
             return CustomPaint(
               key: customPaintKey,
-              willChange: true,
               painter: painter,
             );
           },

@@ -62,7 +62,6 @@ class MazeGeneratorState extends State<MazeGenerator>
                             this,
                           )
                         : null,
-                    willChange: true,
                   );
                 },
               ),

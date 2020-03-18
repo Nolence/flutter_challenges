@@ -46,7 +46,7 @@ class TerrainGenerationState extends State<TerrainGeneration>
       setup(box.size);
     });
 
-    // _animationController.forward();
+    _animationController.forward();
     super.initState();
   }
 
@@ -78,7 +78,6 @@ class TerrainGenerationState extends State<TerrainGeneration>
               return CustomPaint(
                 child: child,
                 key: _customPaintKey,
-                willChange: true,
                 painter: _isInitialized
                     ? TerrainGenerationPainter(_animationController, this)
                     : null,

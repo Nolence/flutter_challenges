@@ -10,6 +10,7 @@ import 'package:challenges/pages/purple_rain/purple_rain.dart';
 import 'package:challenges/pages/rotating_cube/rotating_cube.dart';
 import 'package:challenges/pages/snake_game/snake_game.dart';
 import 'package:challenges/pages/solar_system/solar_system.dart';
+import 'package:challenges/pages/spring_simulation/spring_simulation.dart';
 import 'package:challenges/pages/starfield/starfield.dart';
 import 'package:challenges/pages/super_ellipse/super_ellipse.dart';
 import 'package:challenges/pages/terrain_generation/terrain_generation.dart';
@@ -26,6 +27,7 @@ class App extends StatelessWidget {
       theme: ThemeData.dark(),
       home: Home(),
       routes: {
+        '/spring_simulation': (_) => SpringSimulation(),
         '/super_ellipse': (_) => SuperEllipse(),
         '/lorenz_attractor': (_) => LorenzAttractor(),
         '/rotating_cube': (_) => RotatingCube(),
@@ -64,6 +66,12 @@ class _HomeState extends State<Home> {
             mainAxisSpacing: 16,
           ),
           children: <Widget>[
+            PageButton(
+              title: 'Spring Simulation',
+              to: '/spring_simulation',
+              description:
+                  'A simple spring simulation using Flutter libraries ',
+            ),
             PageButton(
               title: 'A simple super ellipse',
               to: '/super_ellipse',

@@ -76,7 +76,6 @@ class _InvadersState extends State<Invaders>
                           reset: _reset,
                         )
                       : null,
-                  willChange: true,
                 );
               },
             ),

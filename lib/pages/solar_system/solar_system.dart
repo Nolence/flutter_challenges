@@ -43,7 +43,6 @@ class _SolarSystemState extends State<SolarSystem>
           builder: (context, __) {
             return CustomPaint(
               key: customPaintKey,
-              willChange: true,
               painter: isInitialized
                   ? SolarSystemPainter(
                       _animationController,

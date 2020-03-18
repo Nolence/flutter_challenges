@@ -76,7 +76,6 @@ class RotatingCubeState extends State<RotatingCube>
             builder: (_, __) {
               return CustomPaint(
                 key: customPaintKey,
-                willChange: true,
                 painter: cube != null
                     ? CubePainter(_animationController, this)
                     : null,

@@ -48,7 +48,6 @@ class _MitosisState extends State<Mitosis>
               painter: isInitialized
                   ? MitosisPainter(_animationController, cells: cells)
                   : null,
-              willChange: true,
             );
           },
         ),

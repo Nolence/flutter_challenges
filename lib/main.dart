@@ -7,9 +7,11 @@ import 'package:challenges/pages/lorenz_attractor/lorenz_attractor.dart';
 import 'package:challenges/pages/maze_generator/maze_generator.dart';
 import 'package:challenges/pages/mitosis/mitosis.dart';
 import 'package:challenges/pages/purple_rain/purple_rain.dart';
+import 'package:challenges/pages/reaction_diffusion/reaction_diffusion.dart';
 import 'package:challenges/pages/rotating_cube/rotating_cube.dart';
 import 'package:challenges/pages/snake_game/snake_game.dart';
 import 'package:challenges/pages/solar_system/solar_system.dart';
+import 'package:challenges/pages/sphere/sphere.dart';
 import 'package:challenges/pages/spring_simulation/spring_simulation.dart';
 import 'package:challenges/pages/starfield/starfield.dart';
 import 'package:challenges/pages/super_ellipse/super_ellipse.dart';
@@ -17,6 +19,8 @@ import 'package:challenges/pages/terrain_generation/terrain_generation.dart';
 import 'package:challenges/pages/walkers/walkers.dart';
 import 'package:flutter/material.dart';
 
+// Look at the stuff here https://github.com/flutter/flutter/blob/master/examples/layers/raw/spinning_square.dart
+// Pretty cool
 void main() => runApp(App());
 
 class App extends StatelessWidget {
@@ -27,6 +31,7 @@ class App extends StatelessWidget {
       theme: ThemeData.dark(),
       home: Home(),
       routes: {
+        '/reaction_diffusion': (_) => ReactionDiffusion(),
         '/spring_simulation': (_) => SpringSimulation(),
         '/super_ellipse': (_) => SuperEllipse(),
         '/lorenz_attractor': (_) => LorenzAttractor(),
@@ -43,6 +48,7 @@ class App extends StatelessWidget {
         '/invaders': (_) => Invaders(),
         '/color_interpolation': (_) => ColorInterpolation(),
         '/mitosis': (_) => Mitosis(),
+        '/sphere': (_) => Sphere(),
       },
     );
   }
@@ -66,6 +72,16 @@ class _HomeState extends State<Home> {
             mainAxisSpacing: 16,
           ),
           children: <Widget>[
+            PageButton(
+              title: 'Sphere',
+              to: '/sphere',
+              description: 'I\'m drawing a sphere!',
+            ),
+            PageButton(
+              title: 'Reaction Diffusion',
+              to: '/reaction_diffusion',
+              description: 'Drawing some stuff to the canvas',
+            ),
             PageButton(
               title: 'Spring Simulation',
               to: '/spring_simulation',

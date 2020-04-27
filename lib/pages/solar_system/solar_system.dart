@@ -38,19 +38,21 @@ class _SolarSystemState extends State<SolarSystem>
     return Scaffold(
       appBar: AppBar(title: const Text('SolarSystem')),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, __) {
-            return CustomPaint(
-              key: customPaintKey,
-              painter: isInitialized
-                  ? SolarSystemPainter(
-                      _animationController,
-                      sun,
-                    )
-                  : null,
-            );
-          },
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, __) {
+              return CustomPaint(
+                key: customPaintKey,
+                painter: isInitialized
+                    ? SolarSystemPainter(
+                        _animationController,
+                        sun,
+                      )
+                    : null,
+              );
+            },
+          ),
         ),
       ),
     );

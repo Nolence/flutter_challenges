@@ -48,14 +48,16 @@ class _LorenzAttractorState extends State<LorenzAttractor>
     return Scaffold(
       appBar: AppBar(title: Text('Lorenz Attractor')),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          animation: controller,
-          builder: (_, __) {
-            return CustomPaint(
-              key: customPaintKey,
-              painter: painter,
-            );
-          },
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: controller,
+            builder: (_, __) {
+              return CustomPaint(
+                key: customPaintKey,
+                painter: painter,
+              );
+            },
+          ),
         ),
       ),
     );

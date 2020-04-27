@@ -71,18 +71,20 @@ class TerrainGenerationState extends State<TerrainGeneration>
           backgroundColor: Colors.transparent,
         ),
         body: SizedBox.expand(
-          child: AnimatedBuilder(
-            child: MusicPlayer(),
-            animation: _animationController,
-            builder: (context, child) {
-              return CustomPaint(
-                child: child,
-                key: _customPaintKey,
-                painter: _isInitialized
-                    ? TerrainGenerationPainter(_animationController, this)
-                    : null,
-              );
-            },
+          child: RepaintBoundary(
+            child: AnimatedBuilder(
+              child: MusicPlayer(),
+              animation: _animationController,
+              builder: (context, child) {
+                return CustomPaint(
+                  child: child,
+                  key: _customPaintKey,
+                  painter: _isInitialized
+                      ? TerrainGenerationPainter(_animationController, this)
+                      : null,
+                );
+              },
+            ),
           ),
         ),
       ),

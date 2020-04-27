@@ -47,71 +47,73 @@ class SuperEllipseState extends State<SuperEllipse>
     return Scaffold(
       appBar: AppBar(title: const Text('Super Ellipse')),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 140.0),
-                child: Center(
-                  child: Text(
-                    'City Hitch',
-                    style: GoogleFonts.mavenPro().copyWith(
-                      fontSize: 76.0,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.grey[300],
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 140.0),
+                  child: Center(
+                    child: Text(
+                      'City Hitch',
+                      style: GoogleFonts.mavenPro().copyWith(
+                        fontSize: 76.0,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.grey[300],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const Spacer(),
-              IntrinsicHeight(
-                child: Stack(
-                  fit: StackFit.passthrough,
-                  children: <Widget>[
-                    Image.network(
-                      'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.clker.com%2Fcliparts%2Fe%2F7%2F2%2F1%2F1317788420400831019pittsburgh%2520skyline%2520silhouette%2520600dpi-hi.png&f=1&nofb=1',
-                      fit: BoxFit.fitHeight,
-                      width: double.infinity,
-                      height: 400,
-                    ),
-                    Center(
-                      child: ClipOval(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: <Color>[
-                                Colors.purple,
-                                Colors.purpleAccent
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
+                const Spacer(),
+                IntrinsicHeight(
+                  child: Stack(
+                    fit: StackFit.passthrough,
+                    children: <Widget>[
+                      Image.network(
+                        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.clker.com%2Fcliparts%2Fe%2F7%2F2%2F1%2F1317788420400831019pittsburgh%2520skyline%2520silhouette%2520600dpi-hi.png&f=1&nofb=1',
+                        fit: BoxFit.fitHeight,
+                        width: double.infinity,
+                        height: 400,
+                      ),
+                      Center(
+                        child: ClipOval(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: <Color>[
+                                  Colors.purple,
+                                  Colors.purpleAccent
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
                             ),
-                          ),
-                          child: IconButton(
-                            onPressed: () {},
-                            iconSize: 58.0,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                              vertical: 8.0,
+                            child: IconButton(
+                              onPressed: () {},
+                              iconSize: 58.0,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                                vertical: 8.0,
+                              ),
+                              icon: Icon(Icons.compare_arrows),
                             ),
-                            icon: Icon(Icons.compare_arrows),
                           ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
+            animation: _animationController,
+            builder: (context, child) {
+              return CustomPaint(
+                key: customPaintKey,
+                painter: painter,
+                child: child,
+              );
+            },
           ),
-          animation: _animationController,
-          builder: (context, child) {
-            return CustomPaint(
-              key: customPaintKey,
-              painter: painter,
-              child: child,
-            );
-          },
         ),
       ),
     );

@@ -103,20 +103,22 @@ class _FractalsState extends State<Fractals>
           ],
         ),
         body: SizedBox.expand(
-          child: AnimatedBuilder(
-            animation: _animationController,
-            builder: (context, child) {
-              return CustomPaint(
-                key: _customPaintKey,
-                painter: FractalPainter(
-                  length: _length,
-                  animation: _simpleAngle,
-                  lAngle: _lAngle.value,
-                  fractalType: _fractalType,
-                  tree: _tree,
-                ),
-              );
-            },
+          child: RepaintBoundary(
+            child: AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                return CustomPaint(
+                  key: _customPaintKey,
+                  painter: FractalPainter(
+                    length: _length,
+                    animation: _simpleAngle,
+                    lAngle: _lAngle.value,
+                    fractalType: _fractalType,
+                    tree: _tree,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),

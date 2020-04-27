@@ -43,18 +43,20 @@ class _StarfieldState extends State<Starfield>
         elevation: 0.0,
       ),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, __) {
-            return CustomPaint(
-              key: customPaintKey,
-              willChange: true,
-              painter: StarfieldPainter(
-                _animationController,
-                _stars,
-              ),
-            );
-          },
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, __) {
+              return CustomPaint(
+                key: customPaintKey,
+                willChange: true,
+                painter: StarfieldPainter(
+                  _animationController,
+                  _stars,
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

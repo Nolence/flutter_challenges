@@ -61,18 +61,20 @@ class _WalkersState extends State<Walkers> with SingleTickerProviderStateMixin {
           onPressed: _paint,
         ),
         body: SizedBox.expand(
-          child: AnimatedBuilder(
-            animation: _animationController,
-            builder: (context, child) {
-              return CustomPaint(
-                key: _customPaintKey,
-                painter: WalkerPaint(
-                  _branches,
-                  _animationController,
-                  _stepFunction,
-                ),
-              );
-            },
+          child: RepaintBoundary(
+            child: AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                return CustomPaint(
+                  key: _customPaintKey,
+                  painter: WalkerPaint(
+                    _branches,
+                    _animationController,
+                    _stepFunction,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),

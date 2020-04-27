@@ -40,16 +40,18 @@ class _MitosisState extends State<Mitosis>
     return Scaffold(
       appBar: AppBar(title: Text('Mitosis')),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, __) {
-            return CustomPaint(
-              key: customPaintKey,
-              painter: isInitialized
-                  ? MitosisPainter(_animationController, cells: cells)
-                  : null,
-            );
-          },
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, __) {
+              return CustomPaint(
+                key: customPaintKey,
+                painter: isInitialized
+                    ? MitosisPainter(_animationController, cells: cells)
+                    : null,
+              );
+            },
+          ),
         ),
       ),
     );

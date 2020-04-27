@@ -47,14 +47,16 @@ class _ThreeDimensionalState extends State<ThreeDimensional>
     return Scaffold(
       appBar: AppBar(title: Text('Soft Engine')),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          animation: controller,
-          builder: (_, __) {
-            return CustomPaint(
-              key: customPaintKey,
-              painter: painter,
-            );
-          },
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: controller,
+            builder: (_, __) {
+              return CustomPaint(
+                key: customPaintKey,
+                painter: painter,
+              );
+            },
+          ),
         ),
       ),
     );

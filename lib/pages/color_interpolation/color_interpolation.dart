@@ -40,15 +40,17 @@ class _ColorInterpolationState extends State<ColorInterpolation>
     return Scaffold(
       appBar: AppBar(title: Text('ColorInterpolation')),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, __) {
-            return CustomPaint(
-              key: customPaintKey,
-              painter: ColorInterpolationPainter(_animationController),
-              willChange: true,
-            );
-          },
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, __) {
+              return CustomPaint(
+                key: customPaintKey,
+                painter: ColorInterpolationPainter(_animationController),
+                willChange: true,
+              );
+            },
+          ),
         ),
       ),
     );

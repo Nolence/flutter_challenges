@@ -38,19 +38,21 @@ class PurpleRainState extends State<PurpleRain>
     return Scaffold(
       appBar: AppBar(title: Text('Purple Rain')),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, __) {
-            return CustomPaint(
-              key: customPaintKey,
-              painter: PurpleRainPainter(
-                _animationController,
-                rain,
-                random,
-              ),
-              willChange: true,
-            );
-          },
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, __) {
+              return CustomPaint(
+                key: customPaintKey,
+                painter: PurpleRainPainter(
+                  _animationController,
+                  rain,
+                  random,
+                ),
+                willChange: true,
+              );
+            },
+          ),
         ),
       ),
     );

@@ -43,29 +43,31 @@ class _BubblesState extends State<Bubbles>
         elevation: 0.0,
       ),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          animation: _animationController,
-          child: Center(
-            child: Text(
-              'Bubbles',
-              style: Theme.of(context).textTheme.headline3.copyWith(
-                    fontSize: 66.0,
-                    color: Colors.greenAccent,
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-          ),
-          builder: (context, widget) {
-            return CustomPaint(
-              key: customPaintKey,
-              willChange: true,
-              painter: BubblesPainter(
-                _animationController,
-                _bubbles,
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animationController,
+            child: Center(
+              child: Text(
+                'Bubbles',
+                style: Theme.of(context).textTheme.headline3.copyWith(
+                      fontSize: 66.0,
+                      color: Colors.greenAccent,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
-              child: widget,
-            );
-          },
+            ),
+            builder: (context, widget) {
+              return CustomPaint(
+                key: customPaintKey,
+                willChange: true,
+                painter: BubblesPainter(
+                  _animationController,
+                  _bubbles,
+                ),
+                child: widget,
+              );
+            },
+          ),
         ),
       ),
     );

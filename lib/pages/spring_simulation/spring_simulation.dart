@@ -46,14 +46,16 @@ class SpringSimulationState extends State<SpringSimulation>
     return Scaffold(
       appBar: AppBar(title: Text('SpringSimulation')),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, __) {
-            return CustomPaint(
-              key: customPaintKey,
-              painter: painter,
-            );
-          },
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, __) {
+              return CustomPaint(
+                key: customPaintKey,
+                painter: painter,
+              );
+            },
+          ),
         ),
       ),
     );

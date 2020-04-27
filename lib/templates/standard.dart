@@ -43,14 +43,16 @@ class StandardState extends State<Standard>
     return Scaffold(
       appBar: AppBar(title: Text('Standard')),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, __) {
-            return CustomPaint(
-              key: customPaintKey,
-              painter: painter,
-            );
-          },
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, __) {
+              return CustomPaint(
+                key: customPaintKey,
+                painter: painter,
+              );
+            },
+          ),
         ),
       ),
     );

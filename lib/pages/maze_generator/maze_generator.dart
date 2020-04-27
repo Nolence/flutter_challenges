@@ -51,19 +51,21 @@ class MazeGeneratorState extends State<MazeGenerator>
           children: <Widget>[
             AspectRatio(
               aspectRatio: 1,
-              child: AnimatedBuilder(
-                animation: _animationController,
-                builder: (context, __) {
-                  return CustomPaint(
-                    key: customPaintKey,
-                    painter: isInitialized
-                        ? MazeGeneratorPainter(
-                            _animationController,
-                            this,
-                          )
-                        : null,
-                  );
-                },
+              child: RepaintBoundary(
+                child: AnimatedBuilder(
+                  animation: _animationController,
+                  builder: (context, __) {
+                    return CustomPaint(
+                      key: customPaintKey,
+                      painter: isInitialized
+                          ? MazeGeneratorPainter(
+                              _animationController,
+                              this,
+                            )
+                          : null,
+                    );
+                  },
+                ),
               ),
             ),
           ],

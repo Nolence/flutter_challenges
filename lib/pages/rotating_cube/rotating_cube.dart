@@ -71,16 +71,18 @@ class RotatingCubeState extends State<RotatingCube>
           onPanStart: _onPanStart,
           onPanUpdate: _onPanUpdate,
           onPanEnd: _onPanEnd,
-          child: AnimatedBuilder(
-            animation: _animationController,
-            builder: (_, __) {
-              return CustomPaint(
-                key: customPaintKey,
-                painter: cube != null
-                    ? CubePainter(_animationController, this)
-                    : null,
-              );
-            },
+          child: RepaintBoundary(
+            child: AnimatedBuilder(
+              animation: _animationController,
+              builder: (_, __) {
+                return CustomPaint(
+                  key: customPaintKey,
+                  painter: cube != null
+                      ? CubePainter(_animationController, this)
+                      : null,
+                );
+              },
+            ),
           ),
         ),
       ),

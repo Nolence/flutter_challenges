@@ -55,18 +55,20 @@ class _SnakeGameState extends State<SnakeGame>
               throw snapshot.error;
             }
 
-            return AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, __) {
-                return CustomPaint(
-                  willChange: true,
-                  painter: SnakeGamePainter(
-                    _animationController,
-                    snakeGameState,
-                    snapshot.data,
-                  ),
-                );
-              },
+            return RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, __) {
+                  return CustomPaint(
+                    willChange: true,
+                    painter: SnakeGamePainter(
+                      _animationController,
+                      snakeGameState,
+                      snapshot.data,
+                    ),
+                  );
+                },
+              ),
             );
           },
         ),

@@ -51,15 +51,17 @@ class GameTemplateState extends State<GameTemplate>
     return Scaffold(
       appBar: AppBar(title: Text('GameTemplate')),
       body: SizedBox.expand(
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, __) {
-            return CustomPaint(
-              key: customPaintKey,
-              willChange: true,
-              painter: painter,
-            );
-          },
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, __) {
+              return CustomPaint(
+                key: customPaintKey,
+                willChange: true,
+                painter: painter,
+              );
+            },
+          ),
         ),
       ),
     );

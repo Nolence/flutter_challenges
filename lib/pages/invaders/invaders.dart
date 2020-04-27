@@ -60,24 +60,26 @@ class _InvadersState extends State<Invaders>
             //   'http://clipart-library.com/images/6Tr5Ej4pc.jpg',
             //   fit: BoxFit.cover,
             // ),
-            AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, __) {
-                return CustomPaint(
-                  key: customPaintKey,
-                  painter: isInitialized
-                      ? InvadersPainter(
-                          _animationController,
-                          wateringCan: wateringCan,
-                          flowers: flowers,
-                          waterDrops: waterDrops,
-                          invadersGameState: invadersGameState,
-                          waterDropImage: waterDropImage,
-                          reset: _reset,
-                        )
-                      : null,
-                );
-              },
+            RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, __) {
+                  return CustomPaint(
+                    key: customPaintKey,
+                    painter: isInitialized
+                        ? InvadersPainter(
+                            _animationController,
+                            wateringCan: wateringCan,
+                            flowers: flowers,
+                            waterDrops: waterDrops,
+                            invadersGameState: invadersGameState,
+                            waterDropImage: waterDropImage,
+                            reset: _reset,
+                          )
+                        : null,
+                  );
+                },
+              ),
             ),
             GestureDetector(
               onPanUpdate: _startShooting,
